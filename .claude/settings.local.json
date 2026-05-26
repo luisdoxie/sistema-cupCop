@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php artisan *)",
+      "Bash(curl -s -o /tmp/dash.txt -w 'Status: %{http_code}\\\\n' -b /tmp/c3.txt -c /tmp/c3.txt http://127.0.0.1:8000/admin/dashboard)",
+      "Read(//tmp/**)",
+      "PowerShell(New-Item *)"
+    ]
+  }
+}
