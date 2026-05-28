@@ -1,0 +1,53 @@
+databases:
+  - name: sistema-cup-db
+    databaseName: sistemacup
+    user: sistemacupuser
+    plan: free
+
+services:
+  - type: web
+    name: sistema-cup-web
+    env: php
+    plan: free
+    buildCommand: "./render-build.sh"
+    # El documentRoot en Render por defecto es public para entornos PHP
+    # Si quieres estar seguro de que sirve desde public, Render nativo de PHP hace esto autómaticamente
+    envVars:
+      - key: APP_NAME
+        value: "SistemaCUP"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_URL
+        value: "https://sistema-cup-web.onrender.com"
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: sistema-cup-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: sistema-cup-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: sistema-cup-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: sistema-cup-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: sistema-cup-db
+          property: password
+      - key: CACHE_DRIVER
+        value: file
+      - key: SESSION_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
