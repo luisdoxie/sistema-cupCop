@@ -10,8 +10,6 @@ services:
     env: php
     plan: free
     buildCommand: "./render-build.sh"
-    # El documentRoot en Render por defecto es public para entornos PHP
-    # Si quieres estar seguro de que sirve desde public, Render nativo de PHP hace esto autómaticamente
     envVars:
       - key: APP_NAME
         value: "SistemaCUP"
@@ -48,6 +46,10 @@ services:
       - key: CACHE_DRIVER
         value: file
       - key: SESSION_DRIVER
-        value: file
+        value: database
       - key: QUEUE_CONNECTION
         value: sync
+      - key: LOG_CHANNEL
+        value: stderr
+      # Agregar manualmente en el dashboard de Render:
+      # STRIPE_KEY, STRIPE_SECRET, STRIPE_WEBHOOK_SECRET
