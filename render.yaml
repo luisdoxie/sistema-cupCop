@@ -7,9 +7,8 @@ databases:
 services:
   - type: web
     name: sistema-cup-web
-    env: php
+    env: docker
     plan: free
-    buildCommand: "./render-build.sh"
     envVars:
       - key: APP_NAME
         value: "SistemaCUP"
