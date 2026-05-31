@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Usar variables de entorno de Render (ignorar cualquier .env local)
+rm -f .env && touch .env
+
 # Render asigna el puerto via $PORT (por defecto 10000)
 PORT=${PORT:-80}
 sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf
