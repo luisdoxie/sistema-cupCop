@@ -69,6 +69,7 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cupo Máx.</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estudiantes</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -85,6 +86,16 @@
                         @else
                             <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Inactivo</span>
                         @endif
+                    </td>
+                    <td class="px-6 py-4 text-right text-sm space-x-3">
+                        <a href="{{ route('admin.grupos.edit', $grupo) }}"
+                           class="text-blue-600 hover:text-blue-800 font-medium">Editar</a>
+                        <form method="POST" action="{{ route('admin.grupos.destroy', $grupo) }}"
+                              class="inline"
+                              onsubmit="return confirm('¿Eliminar el grupo {{ $grupo->nombre }}?\n\n{{ $grupo->total_estudiantes > 0 ? "⚠️ Tiene {$grupo->total_estudiantes} estudiante(s) asignado(s). Volverán a estado pendiente sin grupo." : "Se eliminarán también sus materias y horarios." }}\n\n¿Confirmar?')">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="text-red-600 hover:text-red-800 font-medium">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
                 @empty

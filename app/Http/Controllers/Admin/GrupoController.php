@@ -82,6 +82,54 @@ class GrupoController extends Controller
         ]);
     }
 
+    public function edit(Grupo $grupo)
+    {
+        $gestionActiva = Gestion::where('estado', 'activo')->first();
+        return view('admin.grupos.form', ['grupo' => $grupo, 'gestionActiva' => $gestionActiva]);
+    }
+
+    public function update(GrupoRequest $request, Grupo $grupo)
+    {
+        $grupo->update($request->validated());
+
+        return redirect()->route('admin.grupos.index')
+            ->with('success', "Grupo '{$grupo->nombre}' actualizado correctamente.");
+    }
+
+    public function destroy(Grupo $grupo)
+    {
+        DB::transaction(function () use ($grupo) {
+            // Desasignar estudiantes: vuelven a pago_pendiente sin grupo
+            $grupo->admisiones()->whereNotNull('id_grupo')->update([
+                'id_grupo' => null,
+                'estado'   => 'pago_pendiente',
+            ]);
+
+            // Eliminar asistencias y clases programadas de las asignaciones del grupo
+            foreach ($grupo->materiaGrupos as $mg) {
+                foreach ($mg->asignaciones as $asig) {
+                    DB::table('asistencia')
+                        ->whereIn('id_clase', function ($q) use ($asig) {
+                            $q->select('id')->from('clase_programada')->where('id_asignacion', $asig->id);
+                        })->delete();
+                    DB::table('clase_programada')->where('id_asignacion', $asig->id)->delete();
+                    $asig->bloquesHorario()->delete();
+                }
+                DB::table('nota')
+                    ->whereIn('id_examen', function ($q) use ($mg) {
+                        $q->select('id')->from('examen')->where('id_materia_grupo', $mg->id);
+                    })->delete();
+                $mg->asignaciones()->delete();
+                $mg->examenes()->delete();
+            }
+            $grupo->materiaGrupos()->delete();
+            $grupo->delete();
+        });
+
+        return redirect()->route('admin.grupos.index')
+            ->with('success', "Grupo eliminado. Los estudiantes asignados volvieron a estado pendiente.");
+    }
+
     public function asignarPostulantes()
     {
         $gestionActiva = Gestion::where('estado', 'activo')->first();

@@ -114,7 +114,7 @@
     <!-- Footer -->
     <footer class="bg-white border-t mt-12">
         <div class="max-w-4xl mx-auto px-4 py-4 text-center text-xs text-gray-400">
-            &copy; {{ date('Y') }} Centro Universitario Politecnico &mdash; Sistema de Inscripcion
+            &copy; {{ date('Y') }} Curso Pre-Universitarios &mdash; Sistema de Inscripcion
         </div>
     </footer>
 

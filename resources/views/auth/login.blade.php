@@ -17,7 +17,7 @@
                     </svg>
                 </div>
                 <h1 class="text-2xl font-bold text-white">Sistema CUP</h1>
-                <p class="text-blue-200 text-sm mt-1">Centro Universitario Policial</p>
+                <p class="text-blue-200 text-sm mt-1">Curso Pre-Universitarios</p>
             </div>
 
             {{-- Formulario --}}

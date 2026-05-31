@@ -18,12 +18,6 @@ class User extends Authenticatable
 
     protected $hidden = ['password', 'remember_token'];
 
-    // Laravel auth uses 'email' by default for "username" — override to 'ci'
-    public function getAuthIdentifierName(): string
-    {
-        return 'ci';
-    }
-
     protected function casts(): array
     {
         return [

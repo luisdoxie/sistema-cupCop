@@ -21,7 +21,7 @@
 <body>
 <div class="footer">Página <span class="pagenum"></span> | Sistema CUP — {{ now()->format('d/m/Y H:i') }}</div>
 <div class="header">
-    <h1>SISTEMA CUP — Universidad</h1>
+    <h1>SISTEMA CUP — Curso Pre-Universitarios</h1>
     <h2>REPORTE 4: GRUPOS HABILITADOS</h2>
     <div class="meta">Generado: {{ now()->format('d/m/Y H:i') }} | Divisor configurado: {{ $divisor }}</div>
 </div>

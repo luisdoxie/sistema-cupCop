@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AsignacionController;
+use App\Http\Controllers\Admin\ClaseProgramadaController;
 use App\Http\Controllers\Admin\ReporteAsistenciaController;
 use App\Http\Controllers\Admin\ReporteController;
 use App\Http\Controllers\Admin\AulaController;
@@ -30,8 +31,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect()->route('login');
-});
+    return view('welcome');
+})->name('home');
 
 // Rutas de administrador
 Route::middleware(['auth', 'rol:administrador'])
@@ -54,6 +55,9 @@ Route::middleware(['auth', 'rol:administrador'])
         Route::post('/grupos', [GrupoController::class, 'store'])->name('grupos.store');
         Route::post('/grupos/calcular', [GrupoController::class, 'calcularNecesarios'])->name('grupos.calcular');
         Route::post('/grupos/asignar', [GrupoController::class, 'asignarPostulantes'])->name('grupos.asignar');
+        Route::get('/grupos/{grupo}/editar', [GrupoController::class, 'edit'])->name('grupos.edit');
+        Route::put('/grupos/{grupo}', [GrupoController::class, 'update'])->name('grupos.update');
+        Route::delete('/grupos/{grupo}', [GrupoController::class, 'destroy'])->name('grupos.destroy');
 
         // Docentes
         Route::get('/docentes', [DocenteController::class, 'index'])->name('docentes.index');
@@ -62,12 +66,19 @@ Route::middleware(['auth', 'rol:administrador'])
         Route::get('/docentes/{docente}', [DocenteController::class, 'show'])->name('docentes.show');
         Route::get('/docentes/{docente}/editar', [DocenteController::class, 'edit'])->name('docentes.edit');
         Route::put('/docentes/{docente}', [DocenteController::class, 'update'])->name('docentes.update');
+        Route::delete('/docentes/{docente}', [DocenteController::class, 'destroy'])->name('docentes.destroy');
 
         // Asignaciones académicas
         Route::get('/asignaciones', [AsignacionController::class, 'index'])->name('asignaciones.index');
         Route::get('/asignaciones/crear', [AsignacionController::class, 'create'])->name('asignaciones.create');
         Route::post('/asignaciones', [AsignacionController::class, 'store'])->name('asignaciones.store');
         Route::get('/asignaciones/verificar-horario', [AsignacionController::class, 'verificarHorario'])->name('asignaciones.verificar-horario');
+        Route::delete('/asignaciones/{asignacion}', [AsignacionController::class, 'destroy'])->name('asignaciones.destroy');
+
+        // Clases programadas
+        Route::get('/clases', [ClaseProgramadaController::class, 'index'])->name('clases.index');
+        Route::post('/clases/generar', [ClaseProgramadaController::class, 'generar'])->name('clases.generar');
+        Route::delete('/clases/limpiar', [ClaseProgramadaController::class, 'limpiar'])->name('clases.limpiar');
 
         // Aulas
         Route::get('/aulas', [AulaController::class, 'index'])->name('aulas.index');
@@ -91,6 +102,7 @@ Route::middleware(['auth', 'rol:administrador'])
         Route::get('/examenes/{grupo}', [ExamenController::class, 'porGrupo'])->name('examenes.porGrupo');
         Route::post('/grupos/{grupo}/activar', [ExamenController::class, 'activarGrupo'])->name('grupos.activar');
         Route::post('/examenes/{examen}/estado', [ExamenController::class, 'cambiarEstado'])->name('examenes.estado');
+        Route::patch('/examenes/{examen}/fecha', [ExamenController::class, 'actualizarFecha'])->name('examenes.fecha');
 
         // Reportes
         Route::get('/reportes/postulantes',        [ReporteController::class, 'postulantes'])->name('reportes.postulantes');
@@ -179,6 +191,7 @@ Route::middleware(['auth', 'rol:estudiante'])
     ->name('estudiante.')
     ->group(function () {
         Route::get('/dashboard', [EstudianteDashboard::class, 'index'])->name('dashboard');
+        Route::get('/horario', [EstudianteDashboard::class, 'horario'])->name('horario');
         Route::get('/resultados', [EstudianteDashboard::class, 'resultados'])->name('resultados');
         Route::get('/asistencia', [EstudianteAsistencia::class, 'index'])->name('asistencia');
     });

@@ -32,6 +32,7 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Carga Hor.</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Bloques</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -59,6 +60,14 @@
                         @else
                             <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">{{ ucfirst($asig->estado) }}</span>
                         @endif
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <form method="POST" action="{{ route('admin.asignaciones.destroy', $asig) }}"
+                              class="inline"
+                              onsubmit="return confirm('¿Eliminar la asignación de {{ $asig->docente->persona->nombre ?? '' }} en {{ $asig->materiaGrupo->materia->nombre ?? '' }}? Se eliminarán también los bloques de horario.')">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-medium">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
                 @empty

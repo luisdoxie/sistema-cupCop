@@ -60,9 +60,15 @@
                             <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Inactivo</span>
                         @endif
                     </td>
-                    <td class="px-6 py-4 text-right text-sm space-x-2">
-                        <a href="{{ route('admin.docentes.show', $docente) }}" class="text-gray-600 hover:underline">Ver</a>
-                        <a href="{{ route('admin.docentes.edit', $docente) }}" class="text-blue-600 hover:underline">Editar</a>
+                    <td class="px-6 py-4 text-right text-sm space-x-3">
+                        <a href="{{ route('admin.docentes.show', $docente) }}" class="text-gray-600 hover:text-gray-800 font-medium">Ver</a>
+                        <a href="{{ route('admin.docentes.edit', $docente) }}" class="text-blue-600 hover:text-blue-800 font-medium">Editar</a>
+                        <form method="POST" action="{{ route('admin.docentes.destroy', $docente) }}"
+                              class="inline"
+                              onsubmit="return confirm('¿Eliminar al docente {{ $docente->persona->nombre }} {{ $docente->persona->apellido }}? Esta acción no se puede deshacer.')">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="text-red-600 hover:text-red-800 font-medium">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
                 @empty

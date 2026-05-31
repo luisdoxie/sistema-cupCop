@@ -117,4 +117,23 @@ class DocenteController extends Controller
         return redirect()->route('admin.docentes.index')
             ->with('success', 'Docente actualizado exitosamente.');
     }
+
+    public function destroy(Docente $docente)
+    {
+        $tieneAsignaciones = $docente->asignaciones()->where('estado', 'activo')->exists();
+
+        if ($tieneAsignaciones) {
+            return redirect()->route('admin.docentes.index')
+                ->with('error', "No se puede eliminar al docente {$docente->persona->nombre} {$docente->persona->apellido} porque tiene asignaciones activas.");
+        }
+
+        DB::transaction(function () use ($docente) {
+            $persona = $docente->persona;
+            $docente->delete();
+            $persona->delete();
+        });
+
+        return redirect()->route('admin.docentes.index')
+            ->with('success', 'Docente eliminado correctamente.');
+    }
 }

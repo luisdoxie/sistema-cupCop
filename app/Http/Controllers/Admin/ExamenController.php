@@ -55,6 +55,20 @@ class ExamenController extends Controller
             ->with('success', "Grupo activado y {$materiaGrupos->count()} materias con exámenes creados.");
     }
 
+    public function actualizarFecha(Request $request, Examen $examen)
+    {
+        $request->validate([
+            'fecha' => ['required', 'date'],
+        ], [
+            'fecha.required' => 'La fecha es obligatoria.',
+            'fecha.date'     => 'Ingrese una fecha válida.',
+        ]);
+
+        $examen->update(['fecha' => $request->fecha]);
+
+        return back()->with('success', 'Fecha del examen actualizada correctamente.');
+    }
+
     public function cambiarEstado(Request $request, Examen $examen)
     {
         $request->validate([

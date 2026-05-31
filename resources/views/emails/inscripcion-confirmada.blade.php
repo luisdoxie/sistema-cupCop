@@ -3,7 +3,7 @@
 
 Estimado/a **{{ $admision->estudiante->persona->nombre ?? 'Estudiante' }} {{ $admision->estudiante->persona->apellido ?? '' }}**,
 
-Su inscripcion ha sido registrada correctamente en el **Centro Universitario Politecnico (CUP)**.
+Su inscripcion ha sido registrada correctamente en el **Curso Pre-Universitarios (CUP)**.
 
 ## Detalles de su Admision
 

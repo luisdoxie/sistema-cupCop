@@ -114,6 +114,49 @@ class AsignacionController extends Controller
             ->with('success', 'Asignación académica creada exitosamente.');
     }
 
+    public function destroy(AsignacionAcademica $asignacion)
+    {
+        DB::transaction(function () use ($asignacion) {
+            $materiaGrupo = $asignacion->materiaGrupo;
+
+            // 1. Asistencias → dependen de clase_programada
+            DB::table('asistencia')
+                ->whereIn('id_clase', function ($q) use ($asignacion) {
+                    $q->select('id')
+                      ->from('clase_programada')
+                      ->where('id_asignacion', $asignacion->id);
+                })->delete();
+
+            // 2. Clases programadas → dependen de asignacion y bloque_horario
+            DB::table('clase_programada')
+                ->where('id_asignacion', $asignacion->id)
+                ->delete();
+
+            // 3. Bloques de horario
+            $asignacion->bloquesHorario()->delete();
+
+            // 4. Asignación
+            $asignacion->delete();
+
+            // 5. Si era la última asignación de esa materia-grupo, limpiarla
+            if ($materiaGrupo && $materiaGrupo->asignaciones()->count() === 0) {
+                // Notas → dependen de examen
+                DB::table('nota')
+                    ->whereIn('id_examen', function ($q) use ($materiaGrupo) {
+                        $q->select('id')
+                          ->from('examen')
+                          ->where('id_materia_grupo', $materiaGrupo->id);
+                    })->delete();
+
+                $materiaGrupo->examenes()->delete();
+                $materiaGrupo->delete();
+            }
+        });
+
+        return redirect()->route('admin.asignaciones.index')
+            ->with('success', 'Asignación eliminada correctamente.');
+    }
+
     public function verificarHorario(Request $request)
     {
         $request->validate([

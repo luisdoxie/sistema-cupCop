@@ -10,10 +10,10 @@ class CarreraSeeder extends Seeder
     public function run(): void
     {
         $carreras = [
-            ['nombre' => 'Sistemas Informaticos',   'sigla' => 'SI',  'plan' => null],
-            ['nombre' => 'Informatica',              'sigla' => 'INF', 'plan' => null],
-            ['nombre' => 'Redes de Computadoras',   'sigla' => 'RC',  'plan' => null],
-            ['nombre' => 'Robotica',                 'sigla' => 'ROB', 'plan' => null],
+            ['nombre' => 'Ingeniería en Sistemas',                     'sigla' => 'SI',  'plan' => null],
+            ['nombre' => 'Ingeniería Informática',                     'sigla' => 'INF', 'plan' => null],
+            ['nombre' => 'Ingeniería en Redes y Telecomunicaciones',   'sigla' => 'RC',  'plan' => null],
+            ['nombre' => 'Ingeniería en Robótica',                     'sigla' => 'ROB', 'plan' => null],
         ];
 
         DB::table('carrera')->insert($carreras);

@@ -83,7 +83,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>Centro Universitario de Preparacion (CUP)</h1>
+        <h1>Curso Pre-Universitarios (CUP)</h1>
         <h2>Lista Oficial de Estudiantes Admitidos</h2>
         @if($gestion)
             <p>Gestion: {{ $gestion->nombre }} | Fecha de generacion: {{ now()->format('d/m/Y H:i') }}</p>

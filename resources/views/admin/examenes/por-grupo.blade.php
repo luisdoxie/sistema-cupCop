@@ -63,15 +63,15 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Puntaje Máximo</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Puntaje Máx.</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cambiar Estado</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         @foreach($mg->examenes as $examen)
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-50" x-data="{ editandoFecha: false }">
                             <td class="px-6 py-4 font-medium text-gray-900">
                                 @if($examen->tipo === 'parcial1') Primer Parcial
                                 @elseif($examen->tipo === 'parcial2') Segundo Parcial
@@ -79,7 +79,31 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-gray-600">{{ $examen->puntaje_maximo }} pts</td>
-                            <td class="px-6 py-4 text-gray-600">{{ $examen->fecha ?? 'Por definir' }}</td>
+
+                            {{-- Celda de fecha con edición inline --}}
+                            <td class="px-6 py-4 text-gray-600">
+                                <span x-show="!editandoFecha" class="cursor-pointer" @click="editandoFecha = true">
+                                    {{ $examen->fecha ? \Carbon\Carbon::parse($examen->fecha)->format('d/m/Y') : 'Por definir' }}
+                                    <span class="text-blue-400 text-xs ml-1">✎</span>
+                                </span>
+                                <form x-show="editandoFecha" method="POST"
+                                      action="{{ route('admin.examenes.fecha', $examen) }}"
+                                      class="flex items-center gap-2">
+                                    @csrf @method('PATCH')
+                                    <input type="date" name="fecha"
+                                           value="{{ $examen->fecha }}"
+                                           class="border border-gray-300 rounded px-2 py-1 text-xs w-36">
+                                    <button type="submit"
+                                            class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded">
+                                        Guardar
+                                    </button>
+                                    <button type="button" @click="editandoFecha = false"
+                                            class="text-xs text-gray-500 hover:underline">
+                                        Cancelar
+                                    </button>
+                                </form>
+                            </td>
+
                             <td class="px-6 py-4">
                                 @if($examen->estado === 'programado')
                                     <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Programado</span>
@@ -89,25 +113,33 @@
                                     <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">Anulado</span>
                                 @endif
                             </td>
+
                             <td class="px-6 py-4">
                                 @if($examen->estado !== 'anulado')
-                                <form method="POST" action="{{ route('admin.examenes.estado', $examen) }}" class="flex gap-2">
-                                    @csrf
+                                <div class="flex gap-3">
                                     @if($examen->estado === 'programado')
-                                    <input type="hidden" name="estado" value="realizado">
-                                    <button type="submit"
-                                            onclick="return confirm('¿Marcar como realizado?')"
-                                            class="text-green-600 hover:underline text-sm">
-                                        Marcar Realizado
-                                    </button>
+                                    <form method="POST" action="{{ route('admin.examenes.estado', $examen) }}">
+                                        @csrf
+                                        <input type="hidden" name="estado" value="realizado">
+                                        <button type="submit"
+                                                onclick="return confirm('¿Marcar como realizado?')"
+                                                class="text-green-600 hover:text-green-800 text-sm font-medium">
+                                            Realizado
+                                        </button>
+                                    </form>
                                     @endif
-                                    <input type="hidden" name="estado" value="anulado">
-                                    <button type="submit" formaction="{{ route('admin.examenes.estado', $examen) }}"
-                                            onclick="return confirm('¿Anular este examen?')"
-                                            class="text-red-600 hover:underline text-sm">
-                                        Anular
-                                    </button>
-                                </form>
+                                    <form method="POST" action="{{ route('admin.examenes.estado', $examen) }}">
+                                        @csrf
+                                        <input type="hidden" name="estado" value="anulado">
+                                        <button type="submit"
+                                                onclick="return confirm('¿Anular este examen? Esta acción no se puede deshacer.')"
+                                                class="text-red-600 hover:text-red-800 text-sm font-medium">
+                                            Anular
+                                        </button>
+                                    </form>
+                                </div>
+                                @else
+                                    <span class="text-gray-400 text-xs">—</span>
                                 @endif
                             </td>
                         </tr>

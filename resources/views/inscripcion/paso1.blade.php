@@ -7,7 +7,12 @@
          confirmPassword: '',
          get passwordsMatch() {
              return this.password.length === 0 || this.confirmPassword.length === 0 || this.password === this.confirmPassword;
-         }
+         },
+         get hasUpper()  { return /[A-Z]/.test(this.password); },
+         get hasLower()  { return /[a-z]/.test(this.password); },
+         get hasNumber() { return /\d/.test(this.password); },
+         get hasLength() { return this.password.length >= 8; },
+         get passwordValid() { return this.hasUpper && this.hasLower && this.hasNumber && this.hasLength; }
      }">
 
     <h1 class="text-2xl font-bold text-gray-800 mb-1">Crear cuenta de estudiante</h1>
@@ -131,12 +136,30 @@
 
             <!-- Password -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Contrasena <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña <span class="text-red-500">*</span></label>
                 <input type="password" name="password" required minlength="8"
                        x-model="password"
                        class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none @error('password') border-red-400 @enderror"
-                       placeholder="Minimo 8 caracteres">
+                       placeholder="Mínimo 8 caracteres">
                 @error('password') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                <div x-show="password.length > 0" class="mt-2 grid grid-cols-2 gap-1">
+                    <span :class="hasLength ? 'text-green-600' : 'text-gray-400'" class="flex items-center gap-1 text-xs">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="hasLength ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'"/></svg>
+                        Mínimo 8 caracteres
+                    </span>
+                    <span :class="hasUpper ? 'text-green-600' : 'text-gray-400'" class="flex items-center gap-1 text-xs">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="hasUpper ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'"/></svg>
+                        Una mayúscula
+                    </span>
+                    <span :class="hasLower ? 'text-green-600' : 'text-gray-400'" class="flex items-center gap-1 text-xs">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="hasLower ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'"/></svg>
+                        Una minúscula
+                    </span>
+                    <span :class="hasNumber ? 'text-green-600' : 'text-gray-400'" class="flex items-center gap-1 text-xs">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="hasNumber ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'"/></svg>
+                        Un número
+                    </span>
+                </div>
             </div>
 
             <!-- Confirmar Password -->
@@ -156,7 +179,7 @@
 
         <div class="pt-4">
             <button type="submit"
-                    :disabled="!passwordsMatch && confirmPassword.length > 0"
+                    :disabled="(!passwordsMatch && confirmPassword.length > 0) || (password.length > 0 && !passwordValid)"
                     class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-3 rounded-lg transition-colors">
                 Continuar al Paso 2 &rarr;
             </button>
