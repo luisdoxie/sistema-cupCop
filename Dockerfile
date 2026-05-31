@@ -1,16 +1,18 @@
 FROM php:8.2-apache
 
-# Extensiones del sistema necesarias
+# Dependencias del sistema (incluye libs necesarias para gd e intl)
 RUN apt-get update && apt-get install -y \
-    git curl libpng-dev libonig-dev libxml2-dev \
-    libzip-dev libpq-dev zip unzip \
-    && docker-php-ext-install \
+    git curl zip unzip \
+    libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
+    libonig-dev libxml2-dev libzip-dev libpq-dev libicu-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
         pdo pdo_pgsql pgsql \
         mbstring bcmath gd zip intl exif pcntl \
     && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
 
-# Node.js para compilar assets con Vite
+# Node.js 20 para compilar assets con Vite
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
