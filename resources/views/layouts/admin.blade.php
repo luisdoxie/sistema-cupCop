@@ -57,6 +57,7 @@
                     ['route' => 'admin.reportes.docentes',     'label' => 'Docentes'],
                     ['route' => 'admin.reportes.gestiones',    'label' => 'Gestiones'],
                     ['route' => 'admin.reportes.asistencia',   'label' => 'Asistencia'],
+                    ['route' => 'admin.reportes.voz',          'label' => '🎙 IA por Voz'],
                 ];
             @endphp
             @foreach($items as $item)

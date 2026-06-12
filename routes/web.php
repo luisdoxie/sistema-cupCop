@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AsignacionController;
 use App\Http\Controllers\Admin\ClaseProgramadaController;
 use App\Http\Controllers\Admin\ReporteAsistenciaController;
 use App\Http\Controllers\Admin\ReporteController;
+use App\Http\Controllers\Admin\ReporteVozController;
 use App\Http\Controllers\Admin\AulaController;
 use App\Http\Controllers\Admin\CargaMasivaController;
 use App\Http\Controllers\Admin\ConfiguracionController;
@@ -135,6 +136,12 @@ Route::middleware(['auth', 'rol:administrador'])
         Route::get('/reportes/asistencia',         [ReporteAsistenciaController::class, 'index'])->name('reportes.asistencia');
         Route::get('/reportes/asistencia/pdf',     [ReporteAsistenciaController::class, 'pdf'])->name('reportes.asistencia.pdf');
         Route::get('/reportes/asistencia/excel',   [ReporteAsistenciaController::class, 'excel'])->name('reportes.asistencia.excel');
+
+        // Reporte por voz con IA
+        Route::get('/reportes/voz',               [ReporteVozController::class, 'index'])->name('reportes.voz');
+        Route::post('/reportes/voz/consultar',    [ReporteVozController::class, 'consultar'])->name('reportes.voz.consultar');
+        Route::post('/reportes/voz/pdf',          [ReporteVozController::class, 'exportarPdf'])->name('reportes.voz.pdf');
+        Route::post('/reportes/voz/excel',        [ReporteVozController::class, 'exportarExcel'])->name('reportes.voz.excel');
     });
 
 // Rutas de documentos (coordinador + administrador)

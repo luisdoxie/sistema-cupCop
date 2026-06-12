@@ -127,6 +127,12 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'voz_consultas' => [
+            'driver' => 'single',
+            'path'   => storage_path('logs/voz_consultas.log'),
+            'level'  => 'info',
+        ],
+
     ],
 
 ];
