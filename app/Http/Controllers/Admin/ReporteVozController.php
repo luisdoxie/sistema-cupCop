@@ -34,21 +34,22 @@ Responde SOLO con el SQL sin explicaciones ni backticks.
 Si no puedes generar SQL valido responde: ERROR: [motivo]";
 
         try {
-            $res = Http::post(
-                'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' . env('GEMINI_API_KEY'),
-                [
-                    'system_instruction' => ['parts' => [['text' => $systemPrompt]]],
-                    'contents'           => [['role' => 'user', 'parts' => [['text' => $texto]]]],
-                ]
-            );
+            $res = Http::withToken(env('DEEPSEEK_API_KEY'))
+                ->post('https://api.deepseek.com/chat/completions', [
+                    'model'    => 'deepseek-chat',
+                    'messages' => [
+                        ['role' => 'system', 'content' => $systemPrompt],
+                        ['role' => 'user',   'content' => $texto],
+                    ],
+                ]);
 
             if ($res->failed()) {
-                return response()->json(['error' => 'Error al conectar con Gemini: ' . $res->body()], 500);
+                return response()->json(['error' => 'Error al conectar con DeepSeek: ' . $res->body()], 500);
             }
 
-            $sql = trim($res->json('candidates.0.content.parts.0.text') ?? '');
+            $sql = trim($res->json('choices.0.message.content') ?? '');
         } catch (\Throwable $e) {
-            return response()->json(['error' => 'Error al conectar con Gemini: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Error al conectar con DeepSeek: ' . $e->getMessage()], 500);
         }
 
         if (str_starts_with($sql, 'ERROR:')) {
