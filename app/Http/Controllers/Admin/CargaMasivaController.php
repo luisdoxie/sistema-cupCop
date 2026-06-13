@@ -34,15 +34,18 @@ class CargaMasivaController extends Controller
             abort(404);
         }
 
-        $headers = $this->plantillas[$tipo];
-        $csv = implode(',', $headers) . "\n";
-        // Fila de ejemplo
-        $ejemplo = array_fill(0, count($headers), 'ejemplo');
-        $csv .= implode(',', $ejemplo) . "\n";
+        $headers  = $this->plantillas[$tipo];
+        $ejemplo  = array_fill(0, count($headers), 'ejemplo');
+        $csv      = implode(',', $headers) . "\r\n" . implode(',', $ejemplo) . "\r\n";
+        $filename = "plantilla_{$tipo}.csv";
 
-        return response($csv, 200, [
-            'Content-Type'        => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"plantilla_{$tipo}.csv\"",
+        return response()->streamDownload(function () use ($csv) {
+            echo $csv;
+        }, $filename, [
+            'Content-Type'  => 'text/csv; charset=UTF-8',
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Pragma'        => 'no-cache',
+            'Expires'       => '0',
         ]);
     }
 
