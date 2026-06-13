@@ -9,6 +9,7 @@ use App\Models\CarreraGestion;
 use App\Models\Gestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class GestionController extends Controller
 {
@@ -79,6 +80,40 @@ class GestionController extends Controller
 
         return redirect()->route('admin.gestiones.index')
             ->with('success', 'Gestión actualizada exitosamente.');
+    }
+
+    public function actualizarCupo(Request $request, Gestion $gestion, CarreraGestion $carreraGestion)
+    {
+        $request->validate([
+            'cupo_maximo' => 'required|integer|min:1|max:500',
+        ]);
+
+        // Contar admitidos reales a esa carrera en esa gestión
+        $admitidos = DB::table('admision')
+            ->where('id_gestion', $gestion->id)
+            ->where(function ($q) use ($carreraGestion) {
+                $q->where(function ($q2) use ($carreraGestion) {
+                    $q2->where('id_carrera1', $carreraGestion->id_carrera)
+                       ->where('estado', 'admitido_carrera1');
+                })->orWhere(function ($q2) use ($carreraGestion) {
+                    $q2->where('id_carrera2', $carreraGestion->id_carrera)
+                       ->where('estado', 'admitido_carrera2');
+                });
+            })->count();
+
+        if ($request->cupo_maximo < $admitidos) {
+            throw ValidationException::withMessages([
+                'cupo_maximo' => "No puede ser menor a los {$admitidos} estudiantes ya admitidos en esta carrera.",
+            ]);
+        }
+
+        $carreraGestion->update([
+            'cupo_maximo'     => $request->cupo_maximo,
+            'cupo_disponible' => $request->cupo_maximo - $admitidos,
+        ]);
+
+        return redirect()->route('admin.gestiones.show', $gestion)
+            ->with('success', 'Cupo actualizado correctamente.');
     }
 
     public function cerrar(Gestion $gestion)
