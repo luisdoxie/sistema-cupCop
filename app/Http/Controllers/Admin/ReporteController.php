@@ -119,10 +119,12 @@ class ReporteController extends Controller
         if ($request->filled('id_materia')) $query->where('id_materia', $request->id_materia);
         if ($request->filled('resultado'))  $query->where('resultado', $request->resultado);
         $rows    = $query->get();
-        $headers = ['CI','Estudiante','Materia','Gestión','P1','P2','Final','Total','Resultado'];
+        $headers = ['CI','Estudiante','Materia','Gestión','P1','P2','Final','Promedio Final','Resultado'];
         $data    = $rows->map(fn($r) => [
             $r->ci,$r->estudiante,$r->materia,$r->gestion,
-            $r->p1,$r->p2,$r->final_nota,$r->total,$r->resultado,
+            $r->p1,$r->p2,$r->final_nota,
+            $r->promedio !== null ? round($r->promedio, 2) : null,
+            $r->resultado,
         ])->toArray();
         return Excel::download(new ReporteExport($headers, $data), 'notas.xlsx');
     }

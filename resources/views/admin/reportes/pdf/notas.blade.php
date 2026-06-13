@@ -30,7 +30,7 @@
     <thead>
         <tr>
             <th>CI</th><th>Estudiante</th><th>Materia</th><th>Gestión</th>
-            <th>P1</th><th>P2</th><th>Final</th><th>Total</th><th>Resultado</th>
+            <th>P1</th><th>P2</th><th>Final</th><th>Promedio Final</th><th>Resultado</th>
         </tr>
     </thead>
     <tbody>
@@ -43,7 +43,7 @@
             <td>{{ $r->p1 ?? '—' }}</td>
             <td>{{ $r->p2 ?? '—' }}</td>
             <td>{{ $r->final_nota ?? '—' }}</td>
-            <td><strong>{{ $r->total ?? '—' }}</strong></td>
+            <td><strong>{{ $r->promedio !== null ? number_format($r->promedio, 2) : '—' }}</strong></td>
             <td><span class="{{ $r->resultado === 'APROBADO' ? 'aprobado' : 'reprobado' }}">{{ $r->resultado }}</span></td>
         </tr>
         @endforeach

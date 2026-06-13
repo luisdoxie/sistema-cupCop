@@ -51,7 +51,7 @@
         <table class="min-w-full divide-y divide-gray-200 text-sm">
             <thead class="bg-gray-50">
                 <tr>
-                    @foreach(['CI','Estudiante','Materia','Gestión','P1','P2','Final','Total','Resultado'] as $col)
+                    @foreach(['CI','Estudiante','Materia','Gestión','P1','P2','Final','Promedio Final','Resultado'] as $col)
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ $col }}</th>
                     @endforeach
                 </tr>
@@ -66,7 +66,7 @@
                     <td class="px-4 py-2 text-center">{{ $r->p1 ?? '—' }}</td>
                     <td class="px-4 py-2 text-center">{{ $r->p2 ?? '—' }}</td>
                     <td class="px-4 py-2 text-center">{{ $r->final_nota ?? '—' }}</td>
-                    <td class="px-4 py-2 text-center font-medium">{{ $r->total ?? '—' }}</td>
+                    <td class="px-4 py-2 text-center font-medium">{{ $r->promedio !== null ? number_format($r->promedio, 2) : '—' }}</td>
                     <td class="px-4 py-2">
                         <span class="px-2 py-0.5 rounded text-xs font-bold {{ $r->resultado === 'APROBADO' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                             {{ $r->resultado }}
