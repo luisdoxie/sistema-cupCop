@@ -29,17 +29,18 @@ class ReporteVozController extends Controller
 "Solo puedes usar SELECT, nunca INSERT, UPDATE, DELETE ni DROP. " .
 "Responde SOLO con el SQL, sin explicaciones, sin bloques markdown, sin backticks. " .
 "Si no puedes generar SQL valido responde: ERROR: [motivo]. " .
-"IMPORTANTE: usa EXACTAMENTE los nombres de columna indicados, sin tildes ni variaciones.\n\n" .
-"vw_lista_postulantes: ci, nombre, apellido, nombre_completo, correo, colegio, ciudad, " .
-"carrera1, sigla_carrera1, carrera2, sigla_carrera2, estado, id_gestion, gestion, anio, carrera_asignada, fecha, id_admision\n" .
-"vw_notas_estudiante: ci, estudiante, materia, id_materia, id_materia_grupo, id_admision, " .
-"id_gestion, gestion, p1, p2, final_nota, total, promedio, resultado\n" .
-"vw_estadisticas_materia: id_materia, materia, id_gestion, gestion, total_estudiantes, " .
-"promedio, nota_max, nota_min, aprobados, reprobados\n" .
-"vw_grupos_habilitados: id_gestion, gestion, anio, total_grupos, capacidad_total, estudiantes_asignados, total_docentes\n" .
-"vw_rendimiento_docente: docente, id_docente, materia, id_materia, gestion, id_gestion, " .
-"total_estudiantes, aprobados, porcentaje_aprobacion\n" .
-"vw_reporte_admision_gestion: id_gestion, gestion, anio, semestre, postulantes, admitidos, reprobados, sin_cupo, porcentaje_admision";
+"CRITICO: usa UNICAMENTE las columnas listadas para cada vista. NO inventes columnas. " .
+"Si una vista no tiene 'anio', filtra por 'gestion' (texto) o 'id_gestion' (numero).\n\n" .
+"vw_lista_postulantes(ci, nombre, apellido, nombre_completo, correo, colegio, ciudad, " .
+"carrera1, sigla_carrera1, carrera2, sigla_carrera2, estado, id_gestion, gestion, anio, carrera_asignada, fecha, id_admision)\n" .
+"vw_notas_estudiante(ci, estudiante, materia, id_materia, id_materia_grupo, id_admision, " .
+"id_gestion, gestion, p1, p2, final_nota, total, promedio, resultado)\n" .
+"vw_estadisticas_materia(id_materia, materia, id_gestion, gestion, total_estudiantes, " .
+"promedio, nota_max, nota_min, aprobados, reprobados)\n" .
+"vw_grupos_habilitados(id_gestion, gestion, anio, total_grupos, capacidad_total, estudiantes_asignados, total_docentes)\n" .
+"vw_rendimiento_docente(docente, id_docente, materia, id_materia, gestion, id_gestion, " .
+"total_estudiantes, aprobados, porcentaje_aprobacion) -- SIN columna anio\n" .
+"vw_reporte_admision_gestion(id_gestion, gestion, anio, semestre, postulantes, admitidos, reprobados, sin_cupo, porcentaje_admision)";
 
         try {
             $res = Http::withToken(env('GROQ_API_KEY'))
