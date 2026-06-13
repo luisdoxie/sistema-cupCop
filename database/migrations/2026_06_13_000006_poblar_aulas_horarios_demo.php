@@ -123,7 +123,7 @@ return new class extends Migration
 
         // Desactivar trigger de cruce de horarios (gestiones distintas no se solapan
         // en la realidad, pero el trigger no distingue fechas de gestión)
-        DB::statement('ALTER TABLE bloque_horario DISABLE TRIGGER ALL');
+        DB::statement('ALTER TABLE bloque_horario DISABLE TRIGGER USER');
 
         try {
             $hoy = new \DateTime('today');
@@ -177,7 +177,7 @@ return new class extends Migration
                 }
             }
         } finally {
-            DB::statement('ALTER TABLE bloque_horario ENABLE TRIGGER ALL');
+            DB::statement('ALTER TABLE bloque_horario ENABLE TRIGGER USER');
         }
     }
 
