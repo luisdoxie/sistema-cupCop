@@ -61,10 +61,10 @@
                     </tr>
                     <tr class="bg-gray-700 text-white text-xs">
                         @foreach($grupo->materiaGrupos as $mg)
-                        <th class="px-2 py-2 text-center border-l border-gray-600">P1<br><span class="text-gray-400">/30</span></th>
-                        <th class="px-2 py-2 text-center">P2<br><span class="text-gray-400">/30</span></th>
-                        <th class="px-2 py-2 text-center">Final<br><span class="text-gray-400">/40</span></th>
-                        <th class="px-2 py-2 text-center">Total<br><span class="text-gray-400">/100</span></th>
+                        <th class="px-2 py-2 text-center border-l border-gray-600">P1<br><span class="text-gray-400">/100</span></th>
+                        <th class="px-2 py-2 text-center">P2<br><span class="text-gray-400">/100</span></th>
+                        <th class="px-2 py-2 text-center">Final<br><span class="text-gray-400">/100</span></th>
+                        <th class="px-2 py-2 text-center">Prom. Final<br><span class="text-gray-400">/100</span></th>
                         @endforeach
                     </tr>
                 </thead>
@@ -93,7 +93,7 @@
                                 type="number"
                                 name="notas[{{ $examen->id }}][{{ $admision->id }}]"
                                 min="0"
-                                max="{{ $examen->puntaje_maximo }}"
+                                max="100"
                                 step="0.01"
                                 class="w-16 border border-gray-300 rounded px-1 py-1 text-center text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                                 x-model.number="notas[{{ $mg->id }}][{{ $admision->id }}]['{{ $tipo }}']"
@@ -132,8 +132,8 @@
     </form>
 
     <div class="bg-gray-50 rounded-lg p-4 text-sm text-gray-600">
-        <p><span class="inline-block w-3 h-3 bg-green-200 rounded mr-1"></span> Verde: Total >= 60 (Aprobado)</p>
-        <p class="mt-1"><span class="inline-block w-3 h-3 bg-red-200 rounded mr-1"></span> Rojo: Total < 60 (Reprobado)</p>
+        <p><span class="inline-block w-3 h-3 bg-green-200 rounded mr-1"></span> Verde: Promedio Final >= 60 (Aprobado)</p>
+        <p class="mt-1"><span class="inline-block w-3 h-3 bg-red-200 rounded mr-1"></span> Rojo: Promedio Final < 60 (Reprobado)</p>
     </div>
     @endif
 </div>
@@ -178,7 +178,7 @@ function planillaNotas() {
             const fi = ns.final !== null && ns.final !== '' ? parseFloat(ns.final) : null;
 
             if (p1 !== null && p2 !== null && fi !== null) {
-                this.totales[mgId][adId] = Math.round((p1 + p2 + fi) * 100) / 100;
+                this.totales[mgId][adId] = Math.round((p1 * 0.30 + p2 * 0.30 + fi * 0.40) * 100) / 100;
             } else {
                 this.totales[mgId][adId] = null;
             }

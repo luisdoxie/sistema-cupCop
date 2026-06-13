@@ -184,6 +184,7 @@
                     <div class="min-w-0">
                         <p class="font-semibold text-gray-800 text-sm truncate">{{ $asig->materiaGrupo->materia->nombre }}</p>
                         <p class="text-xs text-gray-500 mt-0.5">Grupo: {{ $asig->materiaGrupo->grupo->nombre }}</p>
+                        <p class="text-xs text-blue-500">{{ $asig->materiaGrupo->grupo->gestion->nombre ?? '' }}</p>
                         <div class="mt-1 space-y-0.5">
                             @foreach($asig->bloquesHorario as $b)
                             <p class="text-xs text-gray-400">{{ ucfirst($b->dia) }} {{ \Carbon\Carbon::parse($b->hora_inicio)->format('H:i') }}-{{ \Carbon\Carbon::parse($b->hora_fin)->format('H:i') }}</p>

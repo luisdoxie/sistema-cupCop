@@ -104,7 +104,7 @@ class NotaController extends Controller
                     continue;
                 }
                 $cal = (float) $calificacion;
-                if ($cal < 0 || $cal > $examen->puntaje_maximo) {
+                if ($cal < 0 || $cal > 100) {
                     continue;
                 }
 

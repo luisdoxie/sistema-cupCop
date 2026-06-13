@@ -27,7 +27,7 @@ class DashboardController extends Controller
             $hoy = now()->toDateString();
 
             $misAsignaciones = AsignacionAcademica::with([
-                    'materiaGrupo.grupo',
+                    'materiaGrupo.grupo.gestion',
                     'materiaGrupo.materia',
                     'bloquesHorario',
                 ])

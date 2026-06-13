@@ -20,26 +20,21 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- calcular_promedio_materia: promedio de los 3 examenes
+-- calcular_promedio_materia: promedio ponderado (P1*0.30 + P2*0.30 + Final*0.40)
 CREATE OR REPLACE FUNCTION calcular_promedio_materia(p_id_admision BIGINT, p_id_materia_grupo BIGINT)
 RETURNS DECIMAL AS $$
 DECLARE
-    v_suma DECIMAL;
-    v_count INT;
+    v_promedio DECIMAL;
 BEGIN
-    SELECT COALESCE(SUM(n.calificacion), 0), COUNT(n.id)
-    INTO v_suma, v_count
+    SELECT COALESCE(SUM(n.calificacion * e.puntaje_maximo / 100.0), 0)
+    INTO v_promedio
     FROM nota n
     INNER JOIN examen e ON e.id = n.id_examen
     WHERE n.id_admision = p_id_admision
       AND e.id_materia_grupo = p_id_materia_grupo
       AND n.estado != 'anulada';
 
-    IF v_count = 0 THEN
-        RETURN 0;
-    END IF;
-
-    RETURN v_suma / 3;
+    RETURN v_promedio;
 END;
 $$ LANGUAGE plpgsql;
 

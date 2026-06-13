@@ -22,6 +22,7 @@ return new class extends Migration
 
         $this->ensureTurnos();
         $this->ensureMaterias();
+        $this->ensureCarreras();
 
         $carreras  = DB::table('carrera')->pluck('id', 'sigla')->toArray();
         $materias  = DB::table('materia')->pluck('id', 'sigla')->toArray();
@@ -76,6 +77,19 @@ return new class extends Migration
             ['nombre' => 'Matematicas', 'sigla' => 'MAT',  'created_at' => now(), 'updated_at' => now()],
             ['nombre' => 'Ingles',      'sigla' => 'ING',  'created_at' => now(), 'updated_at' => now()],
             ['nombre' => 'Fisica',      'sigla' => 'FIS',  'created_at' => now(), 'updated_at' => now()],
+        ]);
+    }
+
+    private function ensureCarreras(): void
+    {
+        if (DB::table('carrera')->count() > 0) {
+            return;
+        }
+        DB::table('carrera')->insert([
+            ['nombre' => 'Ingeniería en Sistemas',                   'sigla' => 'SI',  'created_at' => now(), 'updated_at' => now()],
+            ['nombre' => 'Ingeniería Informática',                   'sigla' => 'INF', 'created_at' => now(), 'updated_at' => now()],
+            ['nombre' => 'Ingeniería en Redes y Telecomunicaciones', 'sigla' => 'RC',  'created_at' => now(), 'updated_at' => now()],
+            ['nombre' => 'Ingeniería en Robótica',                   'sigla' => 'ROB', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 
