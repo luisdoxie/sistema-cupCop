@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('title', 'Reportes por Voz con IA')
-@section('page-title', 'Reportes por Voz — IA DeepSeek')
+@section('page-title', 'Reportes por Voz — IA Groq IA')
 
 @section('content')
 <div class="space-y-4" x-data="reporteVoz()">
@@ -58,7 +58,7 @@
 
     {{-- SQL generado --}}
     <div x-show="sqlGenerado" class="bg-gray-900 rounded-lg shadow p-4">
-        <p class="text-xs text-gray-400 mb-1 font-mono">SQL generado por DeepSeek:</p>
+        <p class="text-xs text-gray-400 mb-1 font-mono">SQL generado por Groq IA:</p>
         <pre class="text-green-400 text-xs font-mono whitespace-pre-wrap" x-text="sqlGenerado"></pre>
     </div>
 

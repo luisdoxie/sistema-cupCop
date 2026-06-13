@@ -34,9 +34,9 @@ Responde SOLO con el SQL sin explicaciones ni backticks.
 Si no puedes generar SQL valido responde: ERROR: [motivo]";
 
         try {
-            $res = Http::withToken(env('DEEPSEEK_API_KEY'))
-                ->post('https://api.deepseek.com/chat/completions', [
-                    'model'    => 'deepseek-chat',
+            $res = Http::withToken(env('GROQ_API_KEY'))
+                ->post('https://api.groq.com/openai/v1/chat/completions', [
+                    'model'    => 'llama-3.3-70b-versatile',
                     'messages' => [
                         ['role' => 'system', 'content' => $systemPrompt],
                         ['role' => 'user',   'content' => $texto],
@@ -44,12 +44,12 @@ Si no puedes generar SQL valido responde: ERROR: [motivo]";
                 ]);
 
             if ($res->failed()) {
-                return response()->json(['error' => 'Error al conectar con DeepSeek: ' . $res->body()], 500);
+                return response()->json(['error' => 'Error al conectar con Groq: ' . $res->body()], 500);
             }
 
             $sql = trim($res->json('choices.0.message.content') ?? '');
         } catch (\Throwable $e) {
-            return response()->json(['error' => 'Error al conectar con DeepSeek: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Error al conectar con Groq: ' . $e->getMessage()], 500);
         }
 
         if (str_starts_with($sql, 'ERROR:')) {
