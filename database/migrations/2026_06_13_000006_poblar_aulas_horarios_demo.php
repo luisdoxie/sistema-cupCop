@@ -29,19 +29,35 @@ return new class extends Migration
         // ── 2. Aulas ──────────────────────────────────────────────────────────
         // Numeración 15-30 distribuida en 3 pisos, capacidad uniforme de 60
         // [piso, numero]
+        // [piso, numero, capacidad, tipo]
         $aulaConfig = [
-            [1, '15'], [1, '16'], [1, '17'], [1, '18'], [1, '19'], [1, '20'],
-            [2, '21'], [2, '22'], [2, '23'], [2, '24'], [2, '25'], [2, '26'],
-            [3, '27'], [3, '28'], [3, '29'], [3, '30'],
+            [1, '15', 60, 'regular'],
+            [1, '16', 60, 'regular'],
+            [1, '17', 60, 'regular'],
+            [1, '18', 60, 'regular'],
+            [1, '19', 60, 'regular'],
+            [1, '20', 60, 'regular'],
+            [2, '21', 60, 'regular'],
+            [2, '22', 60, 'regular'],
+            [2, '23', 60, 'regular'],
+            [2, '24', 60, 'regular'],
+            [2, '25', 60, 'regular'],
+            [2, '26', 60, 'regular'],
+            [3, '27', 60, 'regular'],
+            [3, '28', 60, 'regular'],
+            [3, '29', 60, 'regular'],
+            [3, '30', 60, 'regular'],
+            [3, '42', 30, 'laboratorio'],
+            [3, '43', 30, 'laboratorio'],
         ];
 
         $aulaIds = [];
-        foreach ($aulaConfig as [$pNum, $numero]) {
+        foreach ($aulaConfig as [$pNum, $numero, $cap, $tipo]) {
             $aulaIds[] = DB::table('aula')->insertGetId([
                 'id_piso'    => $pisoIds[$pNum],
                 'numero'     => $numero,
-                'capacidad'  => 60,
-                'tipo'       => 'regular',
+                'capacidad'  => $cap,
+                'tipo'       => $tipo,
                 'modalidad'  => 'presencial',
                 'estado'     => 'disponible',
                 'created_at' => now(),
