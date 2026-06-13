@@ -289,16 +289,24 @@ END;
                     ->toArray();
             }
 
+            $nombresM  = ['Juan', 'Luis', 'Carlos', 'Pedro', 'Miguel', 'Diego', 'Marco', 'Pablo', 'Oscar', 'Raul', 'Victor', 'Ruben', 'Andres', 'Felipe', 'Jorge'];
+            $nombresF  = ['Maria', 'Ana', 'Laura', 'Sofia', 'Diana', 'Rosa', 'Claudia', 'Elena', 'Isabel', 'Carla', 'Fanny', 'Wendy', 'Valeria', 'Paola', 'Sandra'];
+            $apellidos = ['Garcia', 'Lopez', 'Martinez', 'Rodriguez', 'Gomez', 'Perez', 'Sanchez', 'Torres', 'Ramirez', 'Flores', 'Condori', 'Mamani', 'Quispe', 'Torrez', 'Copa', 'Vargas', 'Mendoza', 'Rojas', 'Salazar', 'Cruz'];
+
             for ($i = 0; $i < $needed; $i++) {
-                $ci = (string) $ciBase++;
+                $ci    = (string) $ciBase++;
+                $sexo  = ($i % 2 === 0) ? 'M' : 'F';
+                $nom   = $sexo === 'M' ? $nombresM[$i % count($nombresM)] : $nombresF[$i % count($nombresF)];
+                $ape1  = $apellidos[$i % count($apellidos)];
+                $ape2  = $apellidos[($i + 7) % count($apellidos)];
 
                 $personaId = DB::table('persona')->insertGetId([
                     'ci'         => $ci,
-                    'nombre'     => 'Demo',
-                    'apellido'   => 'Est' . $ci,
-                    'sexo'       => ($i % 2 === 0) ? 'M' : 'F',
-                    'correo'     => $ci . '@cup.bo',
-                    'password'   => Hash::make('Demo2025!'),
+                    'nombre'     => $nom,
+                    'apellido'   => $ape1 . ' ' . $ape2,
+                    'sexo'       => $sexo,
+                    'correo'     => strtolower($nom . '.' . $ape1 . $ci) . '@ficct.edu.bo',
+                    'password'   => Hash::make('Est2025!'),
                     'rol'        => 'estudiante',
                     'activo'     => true,
                     'created_at' => now(),
