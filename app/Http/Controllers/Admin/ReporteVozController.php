@@ -25,8 +25,8 @@ class ReporteVozController extends Controller
         $texto = $request->input('texto');
 
         $client = OpenAI::factory()
-            ->withApiKey(env('GROK_API_KEY'))
-            ->withBaseUri(env('GROK_BASE_URL'))
+            ->withApiKey(env('GEMINI_API_KEY'))
+            ->withBaseUri('https://generativelanguage.googleapis.com/v1beta/openai/')
             ->make();
 
         $systemPrompt = "Eres un asistente del sistema CUP de la FICCT Bolivia.
@@ -40,7 +40,7 @@ Si no puedes generar SQL valido responde: ERROR: [motivo]";
 
         try {
             $response = $client->chat()->create([
-                'model'    => 'grok-3-mini',
+                'model'    => 'gemini-2.0-flash',
                 'messages' => [
                     ['role' => 'system', 'content' => $systemPrompt],
                     ['role' => 'user',   'content' => $texto],
