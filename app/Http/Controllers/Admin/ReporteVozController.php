@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
-use OpenAI;
+use Illuminate\Support\Facades\Http;
 
 class ReporteVozController extends Controller
 {
@@ -24,11 +24,6 @@ class ReporteVozController extends Controller
 
         $texto = $request->input('texto');
 
-        $client = OpenAI::factory()
-            ->withApiKey(env('GEMINI_API_KEY'))
-            ->withBaseUri('https://generativelanguage.googleapis.com/v1beta/openai/')
-            ->make();
-
         $systemPrompt = "Eres un asistente del sistema CUP de la FICCT Bolivia.
 Convierte la consulta del usuario en SQL valido para PostgreSQL.
 Solo puedes usar SELECT, nunca INSERT, UPDATE, DELETE ni DROP.
@@ -39,17 +34,21 @@ Responde SOLO con el SQL sin explicaciones ni backticks.
 Si no puedes generar SQL valido responde: ERROR: [motivo]";
 
         try {
-            $response = $client->chat()->create([
-                'model'    => 'gemini-2.0-flash',
-                'messages' => [
-                    ['role' => 'system', 'content' => $systemPrompt],
-                    ['role' => 'user',   'content' => $texto],
-                ],
-            ]);
+            $res = Http::post(
+                'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' . env('GEMINI_API_KEY'),
+                [
+                    'system_instruction' => ['parts' => [['text' => $systemPrompt]]],
+                    'contents'           => [['role' => 'user', 'parts' => [['text' => $texto]]]],
+                ]
+            );
 
-            $sql = trim($response->choices[0]->message->content);
+            if ($res->failed()) {
+                return response()->json(['error' => 'Error al conectar con Gemini: ' . $res->body()], 500);
+            }
+
+            $sql = trim($res->json('candidates.0.content.parts.0.text') ?? '');
         } catch (\Throwable $e) {
-            return response()->json(['error' => 'Error al conectar con Grok: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Error al conectar con Gemini: ' . $e->getMessage()], 500);
         }
 
         if (str_starts_with($sql, 'ERROR:')) {
