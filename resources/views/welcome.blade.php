@@ -456,7 +456,7 @@ function landingApp() {
      CHATBOT BOTPRESS
 ══════════════════════════════════════════════ --}}
 <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-<script src="https://files.bpcontent.cloud/2026/06/13/04/20260613041314-RJDNS2HF.js"></script>
+<script src="https://files.bpcontent.cloud/2026/06/13/04/20260613041313-G1CTPSBC.js" defer></script>
 
 </body>
 </html>
