@@ -57,7 +57,7 @@ class NotaController extends Controller
 
         $admisiones = Admision::with(['estudiante.persona'])
             ->where('id_grupo', $grupo->id)
-            ->where('estado', 'cursando')
+            ->whereIn('estado', ['cursando', 'admitido_carrera1', 'admitido_carrera2', 'reprobado', 'no_admitido'])
             ->orderBy('id')
             ->get();
 
