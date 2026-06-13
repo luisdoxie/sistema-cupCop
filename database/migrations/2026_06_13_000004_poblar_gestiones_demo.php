@@ -3,14 +3,22 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    private bool $canAssign = false;
+
     public function up(): void
     {
         if (DB::table('docente')->count() >= 8) {
             return;
         }
+
+        // Verify asignacion_academica has id_docente before attempting inserts.
+        // On first run the trigger compiles lazily; schema differences can cause
+        // "column id_docente does not exist" on that first compilation.
+        $this->canAssign = Schema::hasColumn('asignacion_academica', 'id_docente');
 
         $this->ensureTurnos();
         $this->ensureMaterias();
@@ -88,6 +96,12 @@ return new class extends Migration
         $ids = [];
         foreach ($specs as $s) {
             if (DB::table('persona')->where('ci', $s['ci'])->exists()) {
+                // Docente already exists — look up existing id
+                $pId = DB::table('persona')->where('ci', $s['ci'])->value('id');
+                $dId = DB::table('docente')->where('id_persona', $pId)->value('id');
+                if ($dId) {
+                    $ids[$s['esp']][] = $dId;
+                }
                 continue;
             }
             $pId = DB::table('persona')->insertGetId([
@@ -293,7 +307,7 @@ return new class extends Migration
         }
     }
 
-    /** Crea materia_grupo, asignaciones y exámenes para los grupos dados. */
+    /** Crea materia_grupo, asignaciones (con savepoint) y exámenes para los grupos dados. */
     private function crearEstructuraAcademica(
         array $grupoIds, array $materias, int $turnoId,
         array $docenteIds, string $fechaInicio
@@ -307,6 +321,7 @@ return new class extends Migration
 
         $materiaGrupoIds = [];
         $examenIds       = [];
+        $spCounter       = 0;
 
         foreach (['A', 'B'] as $paralelo) {
             $docenteIdx = $paralelo === 'A' ? 0 : 1;
@@ -330,19 +345,35 @@ return new class extends Migration
                 }
                 $materiaGrupoIds[$paralelo][$sigla] = $mgId;
 
-                // asignacion_academica (trigger valida max_grupos)
-                $esp       = $materiaToEsp[$sigla] ?? 'Computacion';
-                $dId       = $docenteIds[$esp][$docenteIdx] ?? null;
-                if ($dId) {
-                    DB::table('asignacion_academica')->insertOrIgnore([
-                        'id_docente'       => $dId,
-                        'id_materia_grupo' => $mgId,
-                        'carga_horaria'    => 4.0,
-                        'fecha_asignacion' => $fechaInicio,
-                        'estado'           => 'activo',
-                        'created_at'       => now(),
-                        'updated_at'       => now(),
-                    ]);
+                // asignacion_academica — use savepoint so a trigger/schema error
+                // does not abort the outer transaction (PostgreSQL requirement)
+                if ($this->canAssign) {
+                    $esp  = $materiaToEsp[$sigla] ?? 'Computacion';
+                    $dId  = $docenteIds[$esp][$docenteIdx] ?? null;
+                    if ($dId) {
+                        $spName = 'sp_asig_' . (++$spCounter);
+                        try {
+                            DB::statement("SAVEPOINT {$spName}");
+                            $existe = DB::table('asignacion_academica')
+                                ->where('id_docente', $dId)
+                                ->where('id_materia_grupo', $mgId)
+                                ->exists();
+                            if (! $existe) {
+                                DB::table('asignacion_academica')->insert([
+                                    'id_docente'       => $dId,
+                                    'id_materia_grupo' => $mgId,
+                                    'carga_horaria'    => 4.0,
+                                    'fecha_asignacion' => $fechaInicio,
+                                    'estado'           => 'activo',
+                                    'created_at'       => now(),
+                                    'updated_at'       => now(),
+                                ]);
+                            }
+                            DB::statement("RELEASE SAVEPOINT {$spName}");
+                        } catch (\Exception $e) {
+                            DB::statement("ROLLBACK TO SAVEPOINT {$spName}");
+                        }
+                    }
                 }
 
                 // Exámenes
