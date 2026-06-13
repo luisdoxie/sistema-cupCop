@@ -40,7 +40,7 @@ Si no puedes generar SQL valido responde: ERROR: [motivo]";
 
         try {
             $response = $client->chat()->create([
-                'model'    => 'grok-beta',
+                'model'    => 'grok-3-mini',
                 'messages' => [
                     ['role' => 'system', 'content' => $systemPrompt],
                     ['role' => 'user',   'content' => $texto],
