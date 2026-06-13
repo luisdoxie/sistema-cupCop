@@ -7,6 +7,7 @@ use App\Modules\Admision\Controllers\Paso4Controller;
 use App\Modules\Admision\Controllers\Paso5Controller;
 use App\Modules\Admision\Controllers\ResultadosController;
 use App\Modules\Admision\Controllers\StripeWebhookController;
+use App\Modules\Admision\Controllers\PostulanteController;
 use App\Modules\Admision\Controllers\VerificacionDocumentosController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,11 @@ Route::middleware(['auth', 'rol:coordinador,administrador'])
         Route::get('/documentos/{admision}', [VerificacionDocumentosController::class, 'show'])->name('documentos.show');
         Route::post('/documentos/{documento}/verificar', [VerificacionDocumentosController::class, 'verificar'])->name('documentos.verificar');
         Route::post('/documentos/{documento}/rechazar', [VerificacionDocumentosController::class, 'rechazar'])->name('documentos.rechazar');
+
+        Route::get('/postulantes', [PostulanteController::class, 'index'])->name('postulantes.index');
+        Route::get('/postulantes/{admision}/editar', [PostulanteController::class, 'edit'])->name('postulantes.edit');
+        Route::put('/postulantes/{admision}', [PostulanteController::class, 'update'])->name('postulantes.update');
+        Route::delete('/postulantes/{admision}', [PostulanteController::class, 'destroy'])->name('postulantes.destroy');
 
         Route::get('/resultados', [ResultadosController::class, 'index'])->name('resultados.index');
         Route::post('/resultados/procesar', [ResultadosController::class, 'procesar'])->name('resultados.procesar');
