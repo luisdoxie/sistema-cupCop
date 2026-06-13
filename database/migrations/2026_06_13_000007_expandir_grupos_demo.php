@@ -62,9 +62,29 @@ END;
 
         $aulaIds = DB::table('aula')->pluck('id')->toArray();
         $carreras = DB::table('carrera')->pluck('id')->toArray();
-        $turnoId  = DB::table('turno')->value('id');
 
-        if (empty($docenteIds) || empty($aulaIds) || empty($carreras) || ! $turnoId) return;
+        $turnos = DB::table('turno')->pluck('id', 'nombre');
+        $turnoManana = $turnos['Manana'] ?? $turnos->first();
+        $turnoTarde  = $turnos['Tarde']  ?? $turnoManana;
+        $turnoNoche  = $turnos['Noche']  ?? $turnoManana;
+
+        if (empty($docenteIds) || empty($aulaIds) || empty($carreras) || ! $turnoManana) return;
+
+        // ── 0. Corregir turno de grupos A y B ya existentes ──────────────────
+        // Migración 000004 asignó el primer turno a todos; B debe ser Tarde.
+        DB::statement("
+            UPDATE materia_grupo
+            SET id_turno = ?
+            WHERE id_grupo IN (SELECT id FROM grupo WHERE paralelo = 'B')
+        ", [$turnoTarde]);
+
+        // Turno por paralelo para los grupos nuevos
+        $turnosPorParalelo = [
+            'C' => $turnoManana,
+            'D' => $turnoManana,
+            'E' => $turnoNoche,
+            'F' => $turnoNoche,
+        ];
 
         // Horarios para paralelos C, D, E, F
         // Distribuidos en mañana (10-13), tarde (14-17 ya existente en B), noche (19-22)
@@ -127,7 +147,7 @@ END;
                             $mgId = DB::table('materia_grupo')->insertGetId([
                                 'id_grupo'   => $grupoId,
                                 'id_materia' => $materiaId,
-                                'id_turno'   => $turnoId,
+                                'id_turno'   => $turnosPorParalelo[$paralelo],
                                 'created_at' => now(),
                                 'updated_at' => now(),
                             ]);
