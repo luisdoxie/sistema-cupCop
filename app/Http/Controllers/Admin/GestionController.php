@@ -51,6 +51,23 @@ class GestionController extends Controller
             ->with('success', 'Gestión creada exitosamente.');
     }
 
+    public function show(Gestion $gestion)
+    {
+        $carrerasGestion = CarreraGestion::where('id_gestion', $gestion->id)
+            ->with('carrera')
+            ->get();
+
+        $stats = [
+            'total_postulantes' => DB::table('admision')->where('id_gestion', $gestion->id)->count(),
+            'cursando'          => DB::table('admision')->where('id_gestion', $gestion->id)->where('estado', 'cursando')->count(),
+            'admitidos'         => DB::table('admision')->where('id_gestion', $gestion->id)->whereIn('estado', ['admitido_carrera1', 'admitido_carrera2'])->count(),
+            'reprobados'        => DB::table('admision')->where('id_gestion', $gestion->id)->where('estado', 'reprobado')->count(),
+            'grupos'            => DB::table('grupo')->where('id_gestion', $gestion->id)->count(),
+        ];
+
+        return view('admin.gestiones.show', compact('gestion', 'carrerasGestion', 'stats'));
+    }
+
     public function edit(Gestion $gestion)
     {
         return view('admin.gestiones.form', compact('gestion'));

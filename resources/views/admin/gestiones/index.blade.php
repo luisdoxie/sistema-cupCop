@@ -65,6 +65,8 @@
                         @endif
                     </td>
                     <td class="px-6 py-4 text-right text-sm space-x-2">
+                        <a href="{{ route('admin.gestiones.show', $gestion) }}"
+                           class="text-gray-600 hover:underline">Ver</a>
                         <a href="{{ route('admin.gestiones.edit', $gestion) }}"
                            class="text-blue-600 hover:underline">Editar</a>
                         @if($gestion->estado === 'activo')
