@@ -13,8 +13,8 @@ class VerificacionDocumentosController extends Controller
     // Tipos de documentos obligatorios
     protected array $docsObligatorios = [
         'certificado_nacimiento',
-        'certificado_colegio',
-        'foto_carnet',
+        'fotocopia_carnet',
+        'libreta_colegio',
     ];
 
     public function index(Request $request)
