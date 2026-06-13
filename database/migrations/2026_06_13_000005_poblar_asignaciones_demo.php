@@ -5,6 +5,11 @@ use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
+    // Sin transacción: el ENABLE TRIGGER del finally debe ejecutarse siempre,
+    // incluso si un INSERT falla — con transacción envolvente de Laravel,
+    // el error aborta la tx y el ENABLE TRIGGER también falla (SQLSTATE 25P02).
+    public bool $withinTransaction = false;
+
     public function up(): void
     {
         // Solo ejecutar si existen los docentes demo
@@ -23,7 +28,6 @@ return new class extends Migration
             return;
         }
 
-        // Mapa CI -> especialidad
         $specs = [
             '50000001' => 'Computacion', '50000002' => 'Computacion',
             '50000003' => 'Matematicas', '50000004' => 'Matematicas',
@@ -33,17 +37,15 @@ return new class extends Migration
 
         $siglaToEsp = ['COMP' => 'Computacion', 'MAT' => 'Matematicas', 'ING' => 'Ingles', 'FIS' => 'Fisica'];
 
-        // Construir mapa especialidad => [docente_id_A, docente_id_B]
         $docenteIds = [];
         foreach ($specs as $ci => $esp) {
-            $pId = DB::table('persona')->where('ci', $ci)->value('id');
-            if (! $pId) continue;
-            $dId = DB::table('docente')->where('id_persona', $pId)->value('id');
-            if (! $dId) continue;
-            $docenteIds[$esp][] = $dId;
+            $pid = DB::table('persona')->where('ci', $ci)->value('id');
+            if (! $pid) continue;
+            $did = DB::table('docente')->where('id_persona', $pid)->value('id');
+            if (! $did) continue;
+            $docenteIds[$esp][] = $did;
         }
 
-        // Obtener todos los materia_grupo de los grupos demo (paralelo A/B)
         $materiaGrupos = DB::table('materia_grupo as mg')
             ->join('grupo as g',    'g.id',  '=', 'mg.id_grupo')
             ->join('materia as m',  'm.id',  '=', 'mg.id_materia')
@@ -53,7 +55,6 @@ return new class extends Migration
             ->whereNotNull('g.paralelo')
             ->get();
 
-        // Desactivar trigger para evitar errores de compilación lazy de PostgreSQL
         DB::statement('ALTER TABLE asignacion_academica DISABLE TRIGGER trg_validar_max_grupos_docente');
 
         try {
@@ -62,24 +63,20 @@ return new class extends Migration
                 if (! $esp) continue;
 
                 $docenteIdx = $mg->paralelo === 'A' ? 0 : 1;
-                $dId        = $docenteIds[$esp][$docenteIdx] ?? null;
-                if (! $dId) continue;
+                $did        = $docenteIds[$esp][$docenteIdx] ?? null;
+                if (! $did) continue;
 
-                $existe = DB::table('asignacion_academica')
-                    ->where('id_docente', $dId)
-                    ->where('id_materia_grupo', $mg->id)
-                    ->exists();
+                // Usar SQL directo para evitar problemas con plan cache de prepared statements
+                $existe = DB::selectOne(
+                    'SELECT 1 FROM asignacion_academica WHERE id_docente = ? AND id_materia_grupo = ?',
+                    [$did, $mg->id]
+                );
 
                 if (! $existe) {
-                    DB::table('asignacion_academica')->insert([
-                        'id_docente'       => $dId,
-                        'id_materia_grupo' => $mg->id,
-                        'carga_horaria'    => 4.0,
-                        'fecha_asignacion' => $mg->fecha_inicio,
-                        'estado'           => 'activo',
-                        'created_at'       => now(),
-                        'updated_at'       => now(),
-                    ]);
+                    DB::statement(
+                        'INSERT INTO asignacion_academica (id_docente, id_materia_grupo, carga_horaria, fecha_asignacion, estado, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                        [$did, $mg->id, 4.0, $mg->fecha_inicio, 'activo', now(), now()]
+                    );
                 }
             }
         } finally {
