@@ -29,8 +29,21 @@ class ReporteVozController extends Controller
 "Solo puedes usar SELECT, nunca INSERT, UPDATE, DELETE ni DROP. " .
 "Responde SOLO con el SQL, sin explicaciones, sin bloques markdown, sin backticks. " .
 "Si no puedes generar SQL valido responde: ERROR: [motivo]. " .
-"CRITICO: usa UNICAMENTE las columnas listadas para cada vista. NO inventes columnas. " .
+"CRITICO: usa UNICAMENTE las columnas listadas. NO inventes columnas. " .
+"Para conteos simples (cuantos docentes, estudiantes, etc.) usa las tablas base directamente. " .
 "Si una vista no tiene 'anio', filtra por 'gestion' (texto) o 'id_gestion' (numero).\n\n" .
+"TABLAS BASE:\n" .
+"docente(id, id_persona, especialidad, grado_academico, anios_experiencia, estado)\n" .
+"estudiante(id, id_persona, colegio_procedencia, ciudad)\n" .
+"persona(id, ci, nombre, apellido, correo, rol, activo)\n" .
+"gestion(id, nombre, anio, semestre, estado, fecha_inicio, fecha_fin)\n" .
+"carrera(id, nombre, sigla)\n" .
+"grupo(id, nombre, cupo_maximo, estado, id_gestion)\n" .
+"admision(id, id_estudiante, id_gestion, id_grupo, id_carrera1, id_carrera2, estado, promedio_final)\n" .
+"materia(id, nombre, sigla)\n" .
+"nota(id, id_admision, id_examen, calificacion, estado)\n" .
+"examen(id, nombre, tipo, id_materia_grupo)\n\n" .
+"VISTAS (para reportes complejos):\n" .
 "vw_lista_postulantes(ci, nombre, apellido, nombre_completo, correo, colegio, ciudad, " .
 "carrera1, sigla_carrera1, carrera2, sigla_carrera2, estado, id_gestion, gestion, anio, carrera_asignada, fecha, id_admision)\n" .
 "vw_notas_estudiante(ci, estudiante, materia, id_materia, id_materia_grupo, id_admision, " .
@@ -39,7 +52,7 @@ class ReporteVozController extends Controller
 "promedio, nota_max, nota_min, aprobados, reprobados)\n" .
 "vw_grupos_habilitados(id_gestion, gestion, anio, total_grupos, capacidad_total, estudiantes_asignados, total_docentes)\n" .
 "vw_rendimiento_docente(docente, id_docente, materia, id_materia, gestion, id_gestion, " .
-"total_estudiantes, aprobados, porcentaje_aprobacion) -- SIN columna anio\n" .
+"total_estudiantes, aprobados, porcentaje_aprobacion)\n" .
 "vw_reporte_admision_gestion(id_gestion, gestion, anio, semestre, postulantes, admitidos, reprobados, sin_cupo, porcentaje_admision)";
 
         try {
