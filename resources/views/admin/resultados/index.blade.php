@@ -12,6 +12,14 @@
                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm">
                 Exportar PDF Admitidos
             </a>
+            <form method="POST" action="{{ route('admin.resultados.enviar-veredictos') }}"
+                  onsubmit="return confirm('¿Enviar correos de veredicto a todos los admitidos/reprobados de la gestión activa?')">
+                @csrf
+                <button type="submit"
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm">
+                    Enviar Correos de Veredicto
+                </button>
+            </form>
             <button @click="modalProcesar = true"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm">
                 Procesar Admisión Final

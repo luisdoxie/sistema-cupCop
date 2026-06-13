@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Inscripcion;
 
+use App\Events\PagoConfirmadoEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Admision;
 use App\Models\Pago;
@@ -63,6 +64,8 @@ class StripeWebhookController extends Controller
 
             // Actualizar estado de admisión
             $admision->update(['estado' => 'pago_pendiente']);
+
+            event(new PagoConfirmadoEvent($admision));
         }
 
         return response()->json(['status' => 'ok']);

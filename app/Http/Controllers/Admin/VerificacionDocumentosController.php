@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\DocumentoRechazadoEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Admision;
 use App\Models\DocumentoPostulante;
@@ -57,6 +58,9 @@ class VerificacionDocumentosController extends Controller
             'estado_verificacion' => 'rechazado',
             'observacion'         => $request->observacion,
         ]);
+
+        $documento->load('admision.estudiante.persona');
+        event(new DocumentoRechazadoEvent($documento, $request->observacion));
 
         return back()->with('success', 'Documento rechazado.');
     }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\VeredictoAdmisionEvent;
 use App\Models\Admision;
 use App\Models\Gestion;
 use Illuminate\Support\Facades\DB;
@@ -64,6 +65,8 @@ class AdmisionFinalService
                         $resultado['no_admitido']++;
                         break;
                 }
+
+                event(new VeredictoAdmisionEvent($admision->fresh()));
             }
         });
 

@@ -158,6 +158,7 @@ Route::middleware(['auth', 'rol:coordinador,administrador'])
         Route::get('/resultados', [ResultadosController::class, 'index'])->name('resultados.index');
         Route::post('/resultados/procesar', [ResultadosController::class, 'procesar'])->name('resultados.procesar');
         Route::get('/resultados/exportar-pdf', [ResultadosController::class, 'exportarPdf'])->name('resultados.pdf');
+        Route::post('/resultados/enviar-veredictos', [ResultadosController::class, 'enviarVeredictos'])->name('resultados.enviar-veredictos');
     });
 
 // Rutas de coordinador (acceso: coordinador y administrador)

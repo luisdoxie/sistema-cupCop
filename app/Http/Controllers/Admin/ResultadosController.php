@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\EnviarVeredictosMasivosJob;
 use App\Models\Admision;
 use App\Models\Gestion;
 use App\Services\AdmisionFinalService;
@@ -66,6 +67,15 @@ class ResultadosController extends Controller
             . "Reprobados: {$resultado['reprobados']}, Sin cupo: {$resultado['no_admitido']}";
 
         return redirect()->route('admin.resultados.index')->with('success', $msg);
+    }
+
+    public function enviarVeredictos()
+    {
+        $gestion = Gestion::where('estado', 'activo')->firstOrFail();
+        EnviarVeredictosMasivosJob::dispatch($gestion->id);
+
+        return redirect()->route('admin.resultados.index')
+            ->with('success', "Enviando correos de veredicto a todos los admitidos/reprobados de la gestión {$gestion->nombre}.");
     }
 
     public function exportarPdf(Request $request)

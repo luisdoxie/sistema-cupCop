@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\GrupoAsignadoEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\GrupoRequest;
 use App\Models\Admision;
@@ -167,6 +168,7 @@ class GrupoController extends Controller
                     'id_grupo' => $grupo->id,
                     'estado'   => 'cursando',
                 ]);
+                event(new GrupoAsignadoEvent($admision));
             }
         });
 
