@@ -8,7 +8,7 @@ return new class extends Migration
     // Sin transacción: el ENABLE TRIGGER del finally debe ejecutarse siempre,
     // incluso si un INSERT falla — con transacción envolvente de Laravel,
     // el error aborta la tx y el ENABLE TRIGGER también falla (SQLSTATE 25P02).
-    public bool $withinTransaction = false;
+    public $withinTransaction = false;
 
     public function up(): void
     {
