@@ -39,10 +39,31 @@
     </div>
 
     {{-- Cupos por carrera --}}
-    <div class="bg-white rounded-lg shadow overflow-hidden" x-data="{ editando: null }">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Cupos por Carrera</h3>
-            <p class="text-xs text-gray-400 mt-0.5">El cupo disponible se recalcula automáticamente descontando los estudiantes ya admitidos.</p>
+    <div class="bg-white rounded-lg shadow overflow-hidden" x-data="{ editando: null, confirmando: false }">
+        <div class="px-6 py-4 border-b border-gray-200 flex items-start justify-between">
+            <div>
+                <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Cupos por Carrera</h3>
+                <p class="text-xs text-gray-400 mt-0.5">El cupo disponible se recalcula automáticamente descontando los estudiantes ya admitidos.</p>
+            </div>
+            <div>
+                <button @click="confirmando = !confirmando"
+                        class="text-xs text-red-600 hover:text-red-800 font-medium border border-red-300 rounded px-3 py-1.5 hover:bg-red-50">
+                    Resetear cupos disponibles
+                </button>
+                <div x-show="confirmando" x-cloak class="mt-2 p-3 bg-red-50 border border-red-200 rounded text-xs text-red-700">
+                    <p class="font-semibold mb-2">¿Confirmar reseteo?</p>
+                    <p class="mb-2">Esto pondrá cupo_disponible = cupo_maximo en todas las carreras. Úselo solo para limpiar datos de prueba.</p>
+                    <form method="POST" action="{{ route('admin.gestiones.cupos.reset', $gestion) }}" class="inline">
+                        @csrf
+                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1 rounded mr-2">
+                            Sí, resetear
+                        </button>
+                        <button type="button" @click="confirmando = false" class="text-gray-600 hover:underline">
+                            Cancelar
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
 
         @if(session('success'))

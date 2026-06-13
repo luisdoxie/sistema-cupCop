@@ -116,6 +116,18 @@ class GestionController extends Controller
             ->with('success', 'Cupo actualizado correctamente.');
     }
 
+    public function resetearCupos(Gestion $gestion)
+    {
+        // Resetea cupo_disponible = cupo_maximo para todas las carreras de esta gestión.
+        // Útil para limpiar datos de prueba del proceso de admisión.
+        DB::table('carrera_gestion')
+            ->where('id_gestion', $gestion->id)
+            ->update(['cupo_disponible' => DB::raw('cupo_maximo')]);
+
+        return redirect()->route('admin.gestiones.show', $gestion)
+            ->with('success', 'Cupos disponibles reseteados al máximo correctamente.');
+    }
+
     public function cerrar(Gestion $gestion)
     {
         if ($gestion->estado !== 'activo') {

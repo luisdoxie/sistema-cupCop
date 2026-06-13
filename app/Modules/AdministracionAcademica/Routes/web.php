@@ -20,6 +20,7 @@ Route::middleware(['auth', 'rol:administrador'])
         Route::post('/gestiones', [GestionController::class, 'store'])->name('gestiones.store');
         Route::get('/gestiones/{gestion}', [GestionController::class, 'show'])->name('gestiones.show');
         Route::put('/gestiones/{gestion}/cupos/{carreraGestion}', [GestionController::class, 'actualizarCupo'])->name('gestiones.cupos.update');
+        Route::post('/gestiones/{gestion}/resetear-cupos', [GestionController::class, 'resetearCupos'])->name('gestiones.cupos.reset');
         Route::get('/gestiones/{gestion}/editar', [GestionController::class, 'edit'])->name('gestiones.edit');
         Route::put('/gestiones/{gestion}', [GestionController::class, 'update'])->name('gestiones.update');
         Route::post('/gestiones/{gestion}/cerrar', [GestionController::class, 'cerrar'])->name('gestiones.cerrar');
