@@ -26,6 +26,9 @@ class AdmisionFinalService
 
             $resultado['total'] = $admisiones->count();
 
+            // Paso 1: verificar aprobación y calcular promedio de todos
+            $aprobados = collect();
+
             foreach ($admisiones as $admision) {
                 $aprobado = DB::selectOne(
                     'SELECT verificar_aprobacion(?) AS resultado',
@@ -38,15 +41,22 @@ class AdmisionFinalService
                     continue;
                 }
 
-                // Calcular promedio final
                 $promedioRow = DB::selectOne(
                     'SELECT calcular_promedio_final(?) AS promedio',
                     [$admision->id]
                 );
                 $promedio = $promedioRow ? (float) $promedioRow->promedio : 0;
                 $admision->update(['promedio_final' => $promedio]);
+                $admision->promedio_final = $promedio;
 
-                // Procesar asignación a carrera
+                $aprobados->push($admision);
+            }
+
+            // Paso 2: ordenar por promedio de mayor a menor (mérito)
+            $aprobados = $aprobados->sortByDesc('promedio_final');
+
+            // Paso 3: asignar cupos en orden de mérito
+            foreach ($aprobados as $admision) {
                 $procesado = DB::selectOne(
                     'SELECT procesar_admision_carrera(?) AS resultado',
                     [$admision->id]
