@@ -27,27 +27,21 @@ return new class extends Migration
         }
 
         // ── 2. Aulas ──────────────────────────────────────────────────────────
-        // [piso, numero, capacidad, tipo]
+        // Numeración 15-30 distribuida en 3 pisos, capacidad uniforme de 60
+        // [piso, numero]
         $aulaConfig = [
-            [1, '101', 45, 'regular'],
-            [1, '102', 45, 'regular'],
-            [1, '103', 45, 'regular'],
-            [1, '104', 45, 'regular'],
-            [2, '201', 45, 'regular'],
-            [2, '202', 45, 'regular'],
-            [2, '203', 45, 'regular'],
-            [2, '204', 45, 'regular'],
-            [3, '301', 30, 'laboratorio'],
-            [3, '302', 30, 'laboratorio'],
+            [1, '15'], [1, '16'], [1, '17'], [1, '18'], [1, '19'], [1, '20'],
+            [2, '21'], [2, '22'], [2, '23'], [2, '24'], [2, '25'], [2, '26'],
+            [3, '27'], [3, '28'], [3, '29'], [3, '30'],
         ];
 
         $aulaIds = [];
-        foreach ($aulaConfig as [$pNum, $numero, $cap, $tipo]) {
+        foreach ($aulaConfig as [$pNum, $numero]) {
             $aulaIds[] = DB::table('aula')->insertGetId([
                 'id_piso'    => $pisoIds[$pNum],
                 'numero'     => $numero,
-                'capacidad'  => $cap,
-                'tipo'       => $tipo,
+                'capacidad'  => 60,
+                'tipo'       => 'regular',
                 'modalidad'  => 'presencial',
                 'estado'     => 'disponible',
                 'created_at' => now(),
