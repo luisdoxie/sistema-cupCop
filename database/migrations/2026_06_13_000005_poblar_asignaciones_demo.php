@@ -55,7 +55,7 @@ return new class extends Migration
             ->whereNotNull('g.paralelo')
             ->get();
 
-        DB::statement('ALTER TABLE asignacion_academica DISABLE TRIGGER trg_validar_max_grupos_docente');
+        DB::statement('ALTER TABLE asignacion_academica DISABLE TRIGGER ALL');
 
         try {
             foreach ($materiaGrupos as $mg) {
@@ -80,7 +80,7 @@ return new class extends Migration
                 }
             }
         } finally {
-            DB::statement('ALTER TABLE asignacion_academica ENABLE TRIGGER trg_validar_max_grupos_docente');
+            DB::statement('ALTER TABLE asignacion_academica ENABLE TRIGGER ALL');
         }
     }
 
