@@ -27,6 +27,11 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
+            "App\\Modules\\Seguridad\\": "app/Modules/Seguridad/",
+            "App\\Modules\\Admision\\": "app/Modules/Admision/",
+            "App\\Modules\\AdministracionAcademica\\": "app/Modules/AdministracionAcademica/",
+            "App\\Modules\\EjecucionAcademica\\": "app/Modules/EjecucionAcademica/",
+            "App\\Modules\\Inteligencia\\": "app/Modules/Inteligencia/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
