@@ -8,13 +8,25 @@ use App\Modules\Inteligencia\Controllers\Docente\DashboardController as DocenteD
 use App\Modules\Inteligencia\Controllers\Estudiante\DashboardController as EstudianteDashboard;
 use Illuminate\Support\Facades\Route;
 
-// Administrador: dashboard y reportes
+// Administrador: dashboard y reporte voz (solo admin)
 Route::middleware(['auth', 'rol:administrador'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
 
+        // Reporte por voz con IA
+        Route::get('/reportes/voz', [ReporteVozController::class, 'index'])->name('reportes.voz');
+        Route::post('/reportes/voz/consultar', [ReporteVozController::class, 'consultar'])->name('reportes.voz.consultar');
+        Route::post('/reportes/voz/pdf', [ReporteVozController::class, 'exportarPdf'])->name('reportes.voz.pdf');
+        Route::post('/reportes/voz/excel', [ReporteVozController::class, 'exportarExcel'])->name('reportes.voz.excel');
+    });
+
+// Reportes (coordinador y administrador)
+Route::middleware(['auth', 'rol:coordinador,administrador'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
         Route::get('/reportes/postulantes', [ReporteController::class, 'postulantes'])->name('reportes.postulantes');
         Route::get('/reportes/postulantes/pdf', [ReporteController::class, 'postulantePdf'])->name('reportes.postulantes.pdf');
         Route::get('/reportes/postulantes/excel', [ReporteController::class, 'postulantesExcel'])->name('reportes.postulantes.excel');
@@ -40,12 +52,6 @@ Route::middleware(['auth', 'rol:administrador'])
         Route::get('/reportes/gestiones/pdf', [ReporteController::class, 'gestionesPdf'])->name('reportes.gestiones.pdf');
         Route::get('/reportes/gestiones/excel', [ReporteController::class, 'gestionesExcel'])->name('reportes.gestiones.excel');
         Route::get('/reportes/gestiones/txt', [ReporteController::class, 'gestionesTxt'])->name('reportes.gestiones.txt');
-
-        // Reporte por voz con IA
-        Route::get('/reportes/voz', [ReporteVozController::class, 'index'])->name('reportes.voz');
-        Route::post('/reportes/voz/consultar', [ReporteVozController::class, 'consultar'])->name('reportes.voz.consultar');
-        Route::post('/reportes/voz/pdf', [ReporteVozController::class, 'exportarPdf'])->name('reportes.voz.pdf');
-        Route::post('/reportes/voz/excel', [ReporteVozController::class, 'exportarExcel'])->name('reportes.voz.excel');
     });
 
 // Coordinador: dashboard

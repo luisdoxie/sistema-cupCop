@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends(auth()->user()->esAdmin() ? 'layouts.admin' : 'layouts.coordinador')
 
 @section('title', 'Verificación de Documentos')
 @section('page-title', 'Verificación de Documentos')

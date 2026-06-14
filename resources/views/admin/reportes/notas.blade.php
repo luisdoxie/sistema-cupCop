@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends(auth()->user()->esAdmin() ? 'layouts.admin' : 'layouts.coordinador')
 @section('title', 'Reporte: Notas')
 @section('page-title', 'Reporte 2 — Aprobados y Reprobados')
 

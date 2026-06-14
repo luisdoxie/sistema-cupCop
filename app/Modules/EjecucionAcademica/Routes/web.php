@@ -8,7 +8,7 @@ use App\Modules\EjecucionAcademica\Controllers\ExamenController;
 use App\Modules\EjecucionAcademica\Controllers\ReporteAsistenciaController;
 use Illuminate\Support\Facades\Route;
 
-// Exámenes y reporte asistencia (solo administrador)
+// Exámenes (solo administrador)
 Route::middleware(['auth', 'rol:administrador'])
     ->prefix('admin')
     ->name('admin.')
@@ -18,7 +18,13 @@ Route::middleware(['auth', 'rol:administrador'])
         Route::post('/grupos/{grupo}/activar', [ExamenController::class, 'activarGrupo'])->name('grupos.activar');
         Route::post('/examenes/{examen}/estado', [ExamenController::class, 'cambiarEstado'])->name('examenes.estado');
         Route::patch('/examenes/{examen}/fecha', [ExamenController::class, 'actualizarFecha'])->name('examenes.fecha');
+    });
 
+// Reporte asistencia (coordinador y administrador)
+Route::middleware(['auth', 'rol:coordinador,administrador'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
         Route::get('/reportes/asistencia', [ReporteAsistenciaController::class, 'index'])->name('reportes.asistencia');
         Route::get('/reportes/asistencia/pdf', [ReporteAsistenciaController::class, 'pdf'])->name('reportes.asistencia.pdf');
         Route::get('/reportes/asistencia/excel', [ReporteAsistenciaController::class, 'excel'])->name('reportes.asistencia.excel');
