@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convocatoria 2025 — CUP | FICCT - UAGRM</title>
+    <title>Convocatoria 2026 — CUP | FICCT - UAGRM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
@@ -111,7 +111,7 @@
         {{-- Chip "Inscripciones abiertas" --}}
         <div class="fade-up inline-flex items-center gap-2 bg-blue-900/60 border border-blue-700 rounded-full px-4 py-1.5 text-blue-300 text-xs font-medium mb-8 backdrop-blur-sm">
             <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-            Convocatoria 2025 — Inscripciones Abiertas
+            Convocatoria 2026 — Inscripciones Abiertas
         </div>
 
         {{-- Nombre de la facultad --}}
@@ -176,7 +176,7 @@
                 <p>
                     La <strong class="text-white">Facultad de Ingeniería en Ciencias de la Computación y Telecomunicaciones</strong>
                     de la Universidad Autónoma Gabriel René Moreno comunica a la población interesada el lanzamiento oficial de la
-                    <strong class="text-blue-400">Convocatoria 2025 del Curso Universitario Preparatorio (CUP)</strong>, dirigido a
+                    <strong class="text-blue-400">Convocatoria 2026 del Curso Universitario Preparatorio (CUP)</strong>, dirigido a
                     quienes aspiran a formarse en las carreras de Ingeniería Informática, Ingeniería en Sistemas,
                     Ingeniería en Redes y Telecomunicaciones e Ingeniería en Robótica.
                 </p>
@@ -285,7 +285,7 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                 </svg>
-                Comenzar inscripción — Convocatoria 2025
+                Comenzar inscripción — Convocatoria 2026
             </a>
             <p class="text-slate-500 text-xs mt-3">Proceso 100% en línea</p>
         </div>
