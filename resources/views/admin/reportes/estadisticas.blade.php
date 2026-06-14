@@ -63,8 +63,8 @@
                     <td class="px-4 py-2 text-xs text-gray-500">{{ $r->gestion }}</td>
                     <td class="px-4 py-2 text-center">{{ $r->total_estudiantes }}</td>
                     <td class="px-4 py-2 text-center font-medium">{{ $r->promedio }}</td>
-                    <td class="px-4 py-2 text-center text-green-700">{{ $r->nota_max }}</td>
-                    <td class="px-4 py-2 text-center text-red-700">{{ $r->nota_min }}</td>
+                    <td class="px-4 py-2 text-center text-green-700">{{ number_format($r->nota_max, 2) }}</td>
+                    <td class="px-4 py-2 text-center text-red-700">{{ number_format($r->nota_min, 2) }}</td>
                     <td class="px-4 py-2 text-center"><span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs font-medium">{{ $r->aprobados }}</span></td>
                     <td class="px-4 py-2 text-center"><span class="bg-red-100 text-red-800 px-2 py-0.5 rounded text-xs font-medium">{{ $r->reprobados }}</span></td>
                 </tr>

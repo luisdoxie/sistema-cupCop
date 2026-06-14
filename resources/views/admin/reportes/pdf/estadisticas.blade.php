@@ -39,8 +39,8 @@
             <td>{{ $r->gestion }}</td>
             <td>{{ $r->total_estudiantes }}</td>
             <td><strong>{{ $r->promedio }}</strong></td>
-            <td>{{ $r->nota_max }}</td>
-            <td>{{ $r->nota_min }}</td>
+            <td>{{ number_format($r->nota_max, 2) }}</td>
+            <td>{{ number_format($r->nota_min, 2) }}</td>
             <td>{{ $r->aprobados }}</td>
             <td>{{ $r->reprobados }}</td>
         </tr>
