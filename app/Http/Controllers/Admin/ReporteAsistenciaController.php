@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Exports\ReporteExport;
+use App\Http\Controllers\Controller;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -73,15 +73,23 @@ class ReporteAsistenciaController extends Controller
     {
         ini_set('memory_limit', '512M');
         set_time_limit(120);
-        $total = (clone $this->buildQuery($request))->count();
-        if ($total > 500) {
-            return $this->pdfLimitError($total, 'gestión, materia o grupo');
-        }
-        $registros = $this->buildQuery($request)->get();
+        $totalReal = (clone $this->buildQuery($request))->count();
+        $registros = $this->buildQuery($request)->limit(100)->get();
         $filtros   = $request->only(['id_gestion','id_grupo','id_materia','fecha_desde','fecha_hasta']);
-        $pdf = Pdf::loadView('admin.reportes.pdf.asistencia', compact('registros','filtros'))
+        $pdf = Pdf::loadView('admin.reportes.pdf.asistencia', compact('registros','filtros','totalReal'))
                   ->setPaper('a4','landscape');
         return $pdf->stream('asistencia.pdf');
+    }
+
+    public function csv(Request $request)
+    {
+        $rows    = $this->buildQuery($request)->get();
+        $headers = ['CI','Estudiante','Materia','Gestión','Grupo','Total Clases','Presentes','Ausentes','Justificados','% Asistencia'];
+        $data    = $rows->map(fn($r) => [
+            $r->ci, $r->estudiante, $r->materia, $r->gestion, $r->grupo,
+            $r->total_clases, $r->presentes, $r->ausentes, $r->justificados, $r->porcentaje.'%',
+        ])->toArray();
+        return Excel::download(new ReporteExport($headers, $data), 'asistencia.csv', \Maatwebsite\Excel\Excel::CSV);
     }
 
     public function excel(Request $request)

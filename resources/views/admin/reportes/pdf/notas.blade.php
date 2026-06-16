@@ -23,8 +23,13 @@
 <div class="header">
     <h1>SISTEMA CUP — Curso Pre-Universitarios</h1>
     <h2>REPORTE 2: POSTULANTES APROBADOS Y REPROBADOS</h2>
-    <div class="meta">Generado: {{ now()->format('d/m/Y H:i') }} | Total: {{ $registros->count() }} registros</div>
+    <div class="meta">Generado: {{ now()->format('d/m/Y H:i') }} | Mostrando: {{ $registros->count() }}{{ isset($totalReal) && $totalReal > 100 ? ' de '.$totalReal : '' }} registros</div>
 </div>
+@if(isset($totalReal) && $totalReal > 100)
+<div style="background:#fef3c7;border:1px solid #f59e0b;padding:4px 10px;font-size:9px;color:#92400e;margin-bottom:8px;border-radius:3px;">
+    Se muestran los primeros 100 de {{ $totalReal }} registros. Usa Excel para el reporte completo sin límite.
+</div>
+@endif
 <table>
     <thead>
         <tr>

@@ -31,6 +31,7 @@
         <div class="flex gap-2">
             <a href="{{ route('admin.reportes.grupos.pdf', request()->query()) }}" target="_blank" class="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1.5 rounded">PDF</a>
             <a href="{{ route('admin.reportes.grupos.excel', request()->query()) }}" class="bg-green-600 hover:bg-green-700 text-white text-sm px-3 py-1.5 rounded">Excel</a>
+            <a href="{{ route('admin.reportes.grupos.csv', request()->query()) }}" class="bg-orange-500 hover:bg-orange-600 text-white text-sm px-3 py-1.5 rounded">CSV</a>
         </div>
     </div>
 

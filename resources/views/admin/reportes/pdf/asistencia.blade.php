@@ -24,9 +24,14 @@
         Generado: {{ now()->format('d/m/Y H:i') }}
         @if(!empty($filtros['fecha_desde'])) | Desde: {{ $filtros['fecha_desde'] }} @endif
         @if(!empty($filtros['fecha_hasta'])) | Hasta: {{ $filtros['fecha_hasta'] }} @endif
-        | Total: {{ $registros->count() }} registros
+        | Mostrando: {{ $registros->count() }}{{ isset($totalReal) && $totalReal > 100 ? ' de '.$totalReal : '' }} registros
     </div>
 </div>
+@if(isset($totalReal) && $totalReal > 100)
+<div style="background:#fef3c7;border:1px solid #f59e0b;padding:4px 10px;font-size:9px;color:#92400e;margin-bottom:8px;border-radius:3px;">
+    Se muestran los primeros 100 de {{ $totalReal }} registros. Usa Excel para el reporte completo sin límite.
+</div>
+@endif
 <table>
     <thead>
         <tr>

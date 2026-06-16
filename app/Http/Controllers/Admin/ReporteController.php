@@ -109,15 +109,29 @@ class ReporteController extends Controller
         if ($request->filled('id_gestion')) $query->where('id_gestion', $request->id_gestion);
         if ($request->filled('id_materia')) $query->where('id_materia', $request->id_materia);
         if ($request->filled('resultado'))  $query->where('resultado', $request->resultado);
-        $total = (clone $query)->count();
-        if ($total > 500) {
-            return $this->pdfLimitError($total, 'materia o resultado');
-        }
-        $registros = $query->get();
+        $totalReal = (clone $query)->count();
+        $registros = $query->limit(100)->get();
         $filtros   = $request->only(['id_gestion','id_materia','resultado']);
-        $pdf = Pdf::loadView('admin.reportes.pdf.notas', compact('registros','filtros'))
+        $pdf = Pdf::loadView('admin.reportes.pdf.notas', compact('registros','filtros','totalReal'))
                   ->setPaper('a4','landscape');
         return $pdf->stream('notas.pdf');
+    }
+
+    public function notasCSV(Request $request)
+    {
+        $query = DB::table('vw_notas_estudiante')->orderBy('estudiante');
+        if ($request->filled('id_gestion')) $query->where('id_gestion', $request->id_gestion);
+        if ($request->filled('id_materia')) $query->where('id_materia', $request->id_materia);
+        if ($request->filled('resultado'))  $query->where('resultado', $request->resultado);
+        $rows    = $query->get();
+        $headers = ['CI','Estudiante','Materia','Gestión','P1','P2','Final','Promedio Final','Resultado'];
+        $data    = $rows->map(fn($r) => [
+            $r->ci, $r->estudiante, $r->materia, $r->gestion,
+            $r->p1, $r->p2, $r->final_nota,
+            $r->promedio !== null ? round($r->promedio, 2) : null,
+            $r->resultado,
+        ])->toArray();
+        return Excel::download(new ReporteExport($headers, $data), 'notas.csv', \Maatwebsite\Excel\Excel::CSV);
     }
 
     public function notasExcel(Request $request)
@@ -181,6 +195,20 @@ class ReporteController extends Controller
         return Excel::download(new ReporteExport($headers, $data), 'estadisticas.xlsx');
     }
 
+    public function estadisticasCSV(Request $request)
+    {
+        $query = DB::table('vw_estadisticas_materia')->orderBy('materia');
+        if ($request->filled('id_gestion')) $query->where('id_gestion', $request->id_gestion);
+        if ($request->filled('id_materia')) $query->where('id_materia', $request->id_materia);
+        $rows    = $query->get();
+        $headers = ['Materia','Gestión','Total Estudiantes','Promedio','Nota Máx','Nota Mín','Aprobados','Reprobados'];
+        $data    = $rows->map(fn($r) => [
+            $r->materia,$r->gestion,$r->total_estudiantes,
+            $r->promedio,$r->nota_max,$r->nota_min,$r->aprobados,$r->reprobados,
+        ])->toArray();
+        return Excel::download(new ReporteExport($headers, $data), 'estadisticas.csv', \Maatwebsite\Excel\Excel::CSV);
+    }
+
     // ── Reporte 4: Grupos habilitados ────────────────────────────────────────────
 
     public function grupos(Request $request)
@@ -221,6 +249,21 @@ class ReporteController extends Controller
             ceil($r->estudiantes_asignados / $divisor),
         ])->toArray();
         return Excel::download(new ReporteExport($headers, $data), 'grupos.xlsx');
+    }
+
+    public function gruposCSV(Request $request)
+    {
+        $query = DB::table('vw_grupos_habilitados')->orderByDesc('anio');
+        if ($request->filled('id_gestion')) $query->where('id_gestion', $request->id_gestion);
+        $rows    = $query->get();
+        $divisor = DB::table('config_sistema')->where('clave','divisor_grupos')->value('valor') ?? 70;
+        $headers = ['Gestión','Año','Total Grupos','Capacidad Total','Estudiantes Asignados','Total Docentes','Grupos Necesarios'];
+        $data    = $rows->map(fn($r) => [
+            $r->gestion, $r->anio, $r->total_grupos, $r->capacidad_total,
+            $r->estudiantes_asignados, $r->total_docentes,
+            ceil($r->estudiantes_asignados / $divisor),
+        ])->toArray();
+        return Excel::download(new ReporteExport($headers, $data), 'grupos.csv', \Maatwebsite\Excel\Excel::CSV);
     }
 
     // ── Reporte 5: Rendimiento por docente ──────────────────────────────────────
@@ -272,6 +315,21 @@ class ReporteController extends Controller
         return Excel::download(new ReporteExport($headers, $data), 'rendimiento_docentes.xlsx');
     }
 
+    public function docentesCSV(Request $request)
+    {
+        $query = DB::table('vw_rendimiento_docente')->orderByDesc('porcentaje_aprobacion');
+        if ($request->filled('id_gestion')) $query->where('id_gestion', $request->id_gestion);
+        if ($request->filled('id_materia')) $query->where('id_materia', $request->id_materia);
+        if ($request->filled('id_docente')) $query->where('id_docente', $request->id_docente);
+        $rows    = $query->get();
+        $headers = ['Docente','Materia','Gestión','Total Estudiantes','Aprobados','% Aprobación'];
+        $data    = $rows->map(fn($r) => [
+            $r->docente,$r->materia,$r->gestion,
+            $r->total_estudiantes,$r->aprobados,$r->porcentaje_aprobacion,
+        ])->toArray();
+        return Excel::download(new ReporteExport($headers, $data), 'rendimiento_docentes.csv', \Maatwebsite\Excel\Excel::CSV);
+    }
+
     // ── Reporte 6: Comparativa entre gestiones ──────────────────────────────────
 
     public function gestiones(Request $request)
@@ -321,6 +379,21 @@ class ReporteController extends Controller
             $r->postulantes,$r->admitidos,$r->reprobados,$r->sin_cupo,$r->porcentaje_admision,
         ])->toArray();
         return Excel::download(new ReporteExport($headers, $data), 'comparativa_gestiones.xlsx');
+    }
+
+    public function gestionesCSV(Request $request)
+    {
+        $desde = $request->input('desde', DB::table('gestion')->min('anio'));
+        $hasta = $request->input('hasta', DB::table('gestion')->max('anio'));
+        $rows  = DB::table('vw_reporte_admision_gestion')
+            ->whereBetween('anio', [$desde, $hasta])
+            ->orderByDesc('anio')->get();
+        $headers = ['Gestión','Año','Semestre','Postulantes','Admitidos','Reprobados','Sin Cupo','% Admisión'];
+        $data    = $rows->map(fn($r) => [
+            $r->gestion,$r->anio,$r->semestre,
+            $r->postulantes,$r->admitidos,$r->reprobados,$r->sin_cupo,$r->porcentaje_admision.'%',
+        ])->toArray();
+        return Excel::download(new ReporteExport($headers, $data), 'comparativa_gestiones.csv', \Maatwebsite\Excel\Excel::CSV);
     }
 
     public function gestionesTxt(Request $request)

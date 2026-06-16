@@ -35,22 +35,27 @@ Route::middleware(['auth', 'rol:coordinador,administrador'])
         Route::get('/reportes/notas', [ReporteController::class, 'notas'])->name('reportes.notas');
         Route::get('/reportes/notas/pdf', [ReporteController::class, 'notasPdf'])->name('reportes.notas.pdf');
         Route::get('/reportes/notas/excel', [ReporteController::class, 'notasExcel'])->name('reportes.notas.excel');
+        Route::get('/reportes/notas/csv', [ReporteController::class, 'notasCSV'])->name('reportes.notas.csv');
 
         Route::get('/reportes/estadisticas', [ReporteController::class, 'estadisticas'])->name('reportes.estadisticas');
         Route::get('/reportes/estadisticas/pdf', [ReporteController::class, 'estadisticasPdf'])->name('reportes.estadisticas.pdf');
         Route::get('/reportes/estadisticas/excel', [ReporteController::class, 'estadisticasExcel'])->name('reportes.estadisticas.excel');
+        Route::get('/reportes/estadisticas/csv', [ReporteController::class, 'estadisticasCSV'])->name('reportes.estadisticas.csv');
 
         Route::get('/reportes/grupos', [ReporteController::class, 'grupos'])->name('reportes.grupos');
         Route::get('/reportes/grupos/pdf', [ReporteController::class, 'gruposPdf'])->name('reportes.grupos.pdf');
         Route::get('/reportes/grupos/excel', [ReporteController::class, 'gruposExcel'])->name('reportes.grupos.excel');
+        Route::get('/reportes/grupos/csv', [ReporteController::class, 'gruposCSV'])->name('reportes.grupos.csv');
 
         Route::get('/reportes/docentes', [ReporteController::class, 'docentes'])->name('reportes.docentes');
         Route::get('/reportes/docentes/pdf', [ReporteController::class, 'docentesPdf'])->name('reportes.docentes.pdf');
         Route::get('/reportes/docentes/excel', [ReporteController::class, 'docentesExcel'])->name('reportes.docentes.excel');
+        Route::get('/reportes/docentes/csv', [ReporteController::class, 'docentesCSV'])->name('reportes.docentes.csv');
 
         Route::get('/reportes/gestiones', [ReporteController::class, 'gestiones'])->name('reportes.gestiones');
         Route::get('/reportes/gestiones/pdf', [ReporteController::class, 'gestionesPdf'])->name('reportes.gestiones.pdf');
         Route::get('/reportes/gestiones/excel', [ReporteController::class, 'gestionesExcel'])->name('reportes.gestiones.excel');
+        Route::get('/reportes/gestiones/csv', [ReporteController::class, 'gestionesCSV'])->name('reportes.gestiones.csv');
         Route::get('/reportes/gestiones/txt', [ReporteController::class, 'gestionesTxt'])->name('reportes.gestiones.txt');
     });
 

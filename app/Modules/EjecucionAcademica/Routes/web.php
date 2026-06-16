@@ -28,6 +28,7 @@ Route::middleware(['auth', 'rol:coordinador,administrador'])
         Route::get('/reportes/asistencia', [ReporteAsistenciaController::class, 'index'])->name('reportes.asistencia');
         Route::get('/reportes/asistencia/pdf', [ReporteAsistenciaController::class, 'pdf'])->name('reportes.asistencia.pdf');
         Route::get('/reportes/asistencia/excel', [ReporteAsistenciaController::class, 'excel'])->name('reportes.asistencia.excel');
+        Route::get('/reportes/asistencia/csv', [ReporteAsistenciaController::class, 'csv'])->name('reportes.asistencia.csv');
     });
 
 // Docente: notas, clases, asistencia
