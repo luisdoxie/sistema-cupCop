@@ -293,6 +293,40 @@
 </section>
 
 {{-- ══════════════════════════════════════════════
+     POSTULACIÓN DOCENTE
+══════════════════════════════════════════════ --}}
+<section class="bg-green-950 border-t border-green-900/60">
+    <div class="max-w-4xl mx-auto px-6 py-16 text-center">
+
+        <div class="inline-flex items-center gap-2 bg-green-900/60 border border-green-700 rounded-full px-4 py-1.5 text-green-300 text-xs font-medium mb-6">
+            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+            Convocatoria Docente 2026 — Abierta
+        </div>
+
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">
+            ¿Eres docente y quieres ser parte del CUP?
+        </h2>
+
+        <p class="text-green-200/70 text-sm max-w-xl mx-auto mb-8 leading-relaxed">
+            La FICCT busca profesionales con formación en <strong class="text-green-200">Computación, Matemáticas, Inglés o Física</strong>
+            para impartir clases en el Curso Universitario Preparatorio.
+            Postula en línea y el equipo administrativo revisará tu perfil.
+        </p>
+
+        <a href="{{ route('postulacion-docente.create') }}"
+           class="inline-flex items-center gap-3 px-8 py-3.5 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl shadow-lg shadow-green-900/40 transition text-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            Postularme como docente
+        </a>
+
+        <p class="text-green-700 text-xs mt-4">Proceso de postulación 100% en línea</p>
+
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════════
      FOOTER
 ══════════════════════════════════════════════ --}}
 <footer class="bg-slate-950 border-t border-slate-800">

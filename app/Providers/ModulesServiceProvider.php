@@ -13,6 +13,7 @@ class ModulesServiceProvider extends ServiceProvider
         'AdministracionAcademica',
         'EjecucionAcademica',
         'Inteligencia',
+        'PostulacionDocente',
     ];
 
     public function boot(): void
