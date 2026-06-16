@@ -38,6 +38,8 @@ class ReporteController extends Controller
 
     public function postulantePdf(Request $request)
     {
+        ini_set('memory_limit', '512M');
+        set_time_limit(120);
         $query = DB::table('vw_lista_postulantes')->orderBy('apellido');
         if ($request->filled('id_gestion')) $query->where('id_gestion', $request->id_gestion);
         if ($request->filled('estado'))     $query->where('estado', $request->estado);
@@ -101,10 +103,16 @@ class ReporteController extends Controller
 
     public function notasPdf(Request $request)
     {
+        ini_set('memory_limit', '512M');
+        set_time_limit(120);
         $query = DB::table('vw_notas_estudiante')->orderBy('estudiante');
         if ($request->filled('id_gestion')) $query->where('id_gestion', $request->id_gestion);
         if ($request->filled('id_materia')) $query->where('id_materia', $request->id_materia);
         if ($request->filled('resultado'))  $query->where('resultado', $request->resultado);
+        $total = (clone $query)->count();
+        if ($total > 500) {
+            return $this->pdfLimitError($total, 'materia o resultado');
+        }
         $registros = $query->get();
         $filtros   = $request->only(['id_gestion','id_materia','resultado']);
         $pdf = Pdf::loadView('admin.reportes.pdf.notas', compact('registros','filtros'))

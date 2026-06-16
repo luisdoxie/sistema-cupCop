@@ -11,7 +11,7 @@
     table { width: 100%; border-collapse: collapse; margin-top: 8px; }
     th { background: #1d4ed8; color: white; padding: 5px 4px; text-align: left; font-size: 9px; }
     td { padding: 4px; border-bottom: 1px solid #e5e7eb; font-size: 9px; }
-    tr:nth-child(even) td { background: #f9fafb; }
+    .alt td { background: #f9fafb; }
     .badge-green { background: #dcfce7; color: #166534; padding: 1px 4px; border-radius: 3px; }
     .badge-red   { background: #fee2e2; color: #991b1b; padding: 1px 4px; border-radius: 3px; }
     .badge-gray  { background: #f3f4f6; color: #374151; padding: 1px 4px; border-radius: 3px; }
@@ -47,7 +47,7 @@
     </thead>
     <tbody>
         @foreach($registros as $r)
-        <tr>
+        <tr class="{{ $loop->even ? 'alt' : '' }}">
             <td>{{ $r->ci }}</td>
             <td>{{ $r->nombre }}</td>
             <td>{{ $r->apellido }}</td>

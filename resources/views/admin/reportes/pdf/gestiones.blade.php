@@ -10,10 +10,9 @@
     .meta { font-size: 9px; color: #666; margin-top: 4px; }
     table { width: 100%; border-collapse: collapse; margin-top: 8px; }
     th { background: #1d4ed8; color: white; padding: 5px 6px; text-align: center; font-size: 9px; }
-    th:first-child { text-align: left; }
+    .left { text-align: left; }
     td { padding: 5px 6px; border-bottom: 1px solid #e5e7eb; font-size: 9px; text-align: center; }
-    td:first-child { text-align: left; }
-    tr:nth-child(even) td { background: #f9fafb; }
+    .alt td { background: #f9fafb; }
     tfoot td { font-weight: bold; background: #f3f4f6; border-top: 2px solid #d1d5db; }
     .footer { position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 8px; color: #999; border-top: 1px solid #e5e7eb; padding-top: 3px; }
 </style>
@@ -32,15 +31,15 @@
 <table>
     <thead>
         <tr>
-            <th>Gestión</th><th>Año</th><th>Sem</th>
+            <th class="left">Gestión</th><th>Año</th><th>Sem</th>
             <th>Postulantes</th><th>Admitidos</th><th>Reprobados</th>
             <th>Sin Cupo</th><th>% Admisión</th>
         </tr>
     </thead>
     <tbody>
         @foreach($registros as $r)
-        <tr>
-            <td>{{ $r->gestion }}</td>
+        <tr class="{{ $loop->even ? 'alt' : '' }}">
+            <td class="left">{{ $r->gestion }}</td>
             <td>{{ $r->anio }}</td>
             <td>{{ $r->semestre }}</td>
             <td>{{ $r->postulantes }}</td>
@@ -53,7 +52,7 @@
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="3">TOTALES</td>
+            <td colspan="3" class="left">TOTALES</td>
             <td>{{ $registros->sum('postulantes') }}</td>
             <td>{{ $registros->sum('admitidos') }}</td>
             <td>{{ $registros->sum('reprobados') }}</td>

@@ -11,7 +11,7 @@
     table { width: 100%; border-collapse: collapse; margin-top: 8px; }
     th { background: #1d4ed8; color: white; padding: 5px 6px; text-align: left; font-size: 9px; }
     td { padding: 5px 6px; border-bottom: 1px solid #e5e7eb; font-size: 9px; }
-    tr:nth-child(even) td { background: #f9fafb; }
+    .alt td { background: #f9fafb; }
     .bar-bg { background: #e5e7eb; border-radius: 3px; height: 8px; width: 80px; display: inline-block; vertical-align: middle; }
     .bar-fill-green { background: #22c55e; border-radius: 3px; height: 8px; display: block; }
     .bar-fill-red   { background: #ef4444; border-radius: 3px; height: 8px; display: block; }
@@ -34,7 +34,7 @@
     </thead>
     <tbody>
         @foreach($registros as $r)
-        <tr>
+        <tr class="{{ $loop->even ? 'alt' : '' }}">
             <td><strong>{{ $r->docente }}</strong></td>
             <td>{{ $r->materia }}</td>
             <td>{{ $r->gestion }}</td>

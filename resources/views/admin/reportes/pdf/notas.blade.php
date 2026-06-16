@@ -10,10 +10,9 @@
     .meta { font-size: 9px; color: #666; margin-top: 4px; }
     table { width: 100%; border-collapse: collapse; margin-top: 8px; }
     th { background: #1d4ed8; color: white; padding: 5px 4px; text-align: center; font-size: 9px; }
-    th:first-child, th:nth-child(2), th:nth-child(3) { text-align: left; }
+    .left { text-align: left; }
     td { padding: 4px; border-bottom: 1px solid #e5e7eb; font-size: 9px; text-align: center; }
-    td:first-child, td:nth-child(2), td:nth-child(3) { text-align: left; }
-    tr:nth-child(even) td { background: #f9fafb; }
+    .alt td { background: #f9fafb; }
     .aprobado { background: #dcfce7; color: #166534; font-weight: bold; padding: 1px 4px; border-radius: 3px; }
     .reprobado { background: #fee2e2; color: #991b1b; font-weight: bold; padding: 1px 4px; border-radius: 3px; }
     .footer { position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 8px; color: #999; border-top: 1px solid #e5e7eb; padding-top: 3px; }
@@ -29,16 +28,16 @@
 <table>
     <thead>
         <tr>
-            <th>CI</th><th>Estudiante</th><th>Materia</th><th>Gestión</th>
+            <th class="left">CI</th><th class="left">Estudiante</th><th class="left">Materia</th><th>Gestión</th>
             <th>P1</th><th>P2</th><th>Final</th><th>Promedio Final</th><th>Resultado</th>
         </tr>
     </thead>
     <tbody>
         @foreach($registros as $r)
-        <tr>
-            <td>{{ $r->ci }}</td>
-            <td>{{ $r->estudiante }}</td>
-            <td>{{ $r->materia }}</td>
+        <tr class="{{ $loop->even ? 'alt' : '' }}">
+            <td class="left">{{ $r->ci }}</td>
+            <td class="left">{{ $r->estudiante }}</td>
+            <td class="left">{{ $r->materia }}</td>
             <td>{{ $r->gestion }}</td>
             <td>{{ $r->p1 ?? '—' }}</td>
             <td>{{ $r->p2 ?? '—' }}</td>

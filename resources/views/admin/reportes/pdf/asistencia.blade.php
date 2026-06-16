@@ -11,7 +11,7 @@
     table { width: 100%; border-collapse: collapse; margin-top: 8px; }
     th { background: #1d4ed8; color: white; padding: 5px 4px; text-align: left; font-size: 9px; }
     td { padding: 4px; border-bottom: 1px solid #e5e7eb; font-size: 9px; }
-    tr:nth-child(even) td { background: #f9fafb; }
+    .alt td { background: #f9fafb; }
     .footer { position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 8px; color: #999; border-top: 1px solid #e5e7eb; padding-top: 3px; }
 </style>
 </head>
@@ -36,7 +36,7 @@
     </thead>
     <tbody>
         @foreach($registros as $r)
-        <tr>
+        <tr class="{{ $loop->even ? 'alt' : '' }}">
             <td>{{ $r->ci }}</td>
             <td>{{ $r->estudiante }}</td>
             <td>{{ $r->materia }}</td>

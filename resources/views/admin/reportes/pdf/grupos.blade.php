@@ -10,10 +10,9 @@
     .meta { font-size: 9px; color: #666; margin-top: 4px; }
     table { width: 100%; border-collapse: collapse; margin-top: 8px; }
     th { background: #1d4ed8; color: white; padding: 5px 6px; text-align: center; font-size: 9px; }
-    th:first-child { text-align: left; }
+    .left { text-align: left; }
     td { padding: 5px 6px; border-bottom: 1px solid #e5e7eb; font-size: 9px; text-align: center; }
-    td:first-child { text-align: left; }
-    tr:nth-child(even) td { background: #f9fafb; }
+    .alt td { background: #f9fafb; }
     .footer { position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 8px; color: #999; border-top: 1px solid #e5e7eb; padding-top: 3px; }
     .info { background: #eff6ff; border: 1px solid #bfdbfe; padding: 5px 8px; border-radius: 3px; margin-bottom: 8px; font-size: 9px; }
 </style>
@@ -29,7 +28,7 @@
 <table>
     <thead>
         <tr>
-            <th>Gestión</th><th>Año</th><th>Total Grupos</th>
+            <th class="left">Gestión</th><th>Año</th><th>Total Grupos</th>
             <th>Capacidad Total</th><th>Est. Asignados</th>
             <th>Docentes</th><th>Grupos Necesarios</th>
         </tr>
@@ -37,8 +36,8 @@
     <tbody>
         @foreach($registros as $r)
         @php $necesarios = ceil($r->estudiantes_asignados / $divisor) @endphp
-        <tr>
-            <td>{{ $r->gestion }}</td>
+        <tr class="{{ $loop->even ? 'alt' : '' }}">
+            <td class="left">{{ $r->gestion }}</td>
             <td>{{ $r->anio }}</td>
             <td>{{ $r->total_grupos }}</td>
             <td>{{ $r->capacidad_total }}</td>

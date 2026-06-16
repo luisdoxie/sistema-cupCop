@@ -71,6 +71,12 @@ class ReporteAsistenciaController extends Controller
 
     public function pdf(Request $request)
     {
+        ini_set('memory_limit', '512M');
+        set_time_limit(120);
+        $total = (clone $this->buildQuery($request))->count();
+        if ($total > 500) {
+            return $this->pdfLimitError($total, 'gestión, materia o grupo');
+        }
         $registros = $this->buildQuery($request)->get();
         $filtros   = $request->only(['id_gestion','id_grupo','id_materia','fecha_desde','fecha_hasta']);
         $pdf = Pdf::loadView('admin.reportes.pdf.asistencia', compact('registros','filtros'))
