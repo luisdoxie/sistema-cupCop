@@ -17,8 +17,9 @@ php artisan view:cache
 # Enlazar storage
 php artisan storage:link || true
 
-# Ejecutar migraciones
+# Ejecutar migraciones y seeders
 php artisan migrate --force
+php artisan db:seed --force
 
 echo "Iniciando Apache en puerto ${PORT}..."
 exec apache2-foreground
