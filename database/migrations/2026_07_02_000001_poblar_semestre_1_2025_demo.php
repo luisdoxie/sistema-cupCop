@@ -187,8 +187,10 @@ return new class extends Migration
         ];
 
         $examenIds = [];
-        $spCounter = 0;
 
+        DB::statement('ALTER TABLE asignacion_academica DISABLE TRIGGER USER');
+
+        try {
         foreach (['A', 'B'] as $paralelo) {
             $docenteIdx = $paralelo === 'A' ? 0 : 1;
 
@@ -212,25 +214,16 @@ return new class extends Migration
                 // Asignación del docente
                 $esp = $materiaToEsp[$sigla] ?? 'Computacion';
                 $dId = $docenteIds[$esp][$docenteIdx] ?? null;
-                if ($dId) {
-                    $spName = 'sp_s1_' . (++$spCounter);
-                    try {
-                        DB::statement("SAVEPOINT {$spName}");
-                        if (! DB::table('asignacion_academica')->where('id_docente', $dId)->where('id_materia_grupo', $mgId)->exists()) {
-                            DB::table('asignacion_academica')->insert([
-                                'id_docente'       => $dId,
-                                'id_materia_grupo' => $mgId,
-                                'carga_horaria'    => 4.0,
-                                'fecha_asignacion' => $fechaInicio,
-                                'estado'           => 'inactivo',
-                                'created_at'       => now(),
-                                'updated_at'       => now(),
-                            ]);
-                        }
-                        DB::statement("RELEASE SAVEPOINT {$spName}");
-                    } catch (\Exception $e) {
-                        DB::statement("ROLLBACK TO SAVEPOINT {$spName}");
-                    }
+                if ($dId && ! DB::table('asignacion_academica')->where('id_docente', $dId)->where('id_materia_grupo', $mgId)->exists()) {
+                    DB::table('asignacion_academica')->insert([
+                        'id_docente'       => $dId,
+                        'id_materia_grupo' => $mgId,
+                        'carga_horaria'    => 4.0,
+                        'fecha_asignacion' => $fechaInicio,
+                        'estado'           => 'inactivo',
+                        'created_at'       => now(),
+                        'updated_at'       => now(),
+                    ]);
                 }
 
                 // Exámenes
@@ -254,6 +247,9 @@ return new class extends Migration
                     $examenIds[$paralelo][$sigla][$tipo] = $eId;
                 }
             }
+        }
+        } finally {
+            DB::statement('ALTER TABLE asignacion_academica ENABLE TRIGGER USER');
         }
 
         return $examenIds;
