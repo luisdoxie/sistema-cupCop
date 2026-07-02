@@ -16,6 +16,6 @@ class MateriaSeeder extends Seeder
             ['nombre' => 'Fisica',      'sigla' => 'FIS'],
         ];
 
-        DB::table('materia')->insert($materias);
+        DB::table('materia')->insertOrIgnore($materias);
     }
 }

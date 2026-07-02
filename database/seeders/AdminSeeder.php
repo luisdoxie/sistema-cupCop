@@ -10,6 +10,10 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
+        if (DB::table('persona')->where('correo', 'admin@sistema-cup.edu.bo')->exists()) {
+            return;
+        }
+
         $personaId = DB::table('persona')->insertGetId([
             'ci'       => '12345678',
             'nombre'   => 'Administrador',

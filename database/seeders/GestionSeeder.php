@@ -36,6 +36,6 @@ class GestionSeeder extends Seeder
             ],
         ];
 
-        DB::table('gestion')->insert($gestiones);
+        DB::table('gestion')->insertOrIgnore($gestiones);
     }
 }

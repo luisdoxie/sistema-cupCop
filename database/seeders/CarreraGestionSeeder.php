@@ -32,6 +32,6 @@ class CarreraGestionSeeder extends Seeder
             }
         }
 
-        DB::table('carrera_gestion')->insert($registros);
+        DB::table('carrera_gestion')->insertOrIgnore($registros);
     }
 }

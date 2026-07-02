@@ -16,6 +16,6 @@ class CarreraSeeder extends Seeder
             ['nombre' => 'Ingeniería en Robótica',                     'sigla' => 'ROB', 'plan' => null],
         ];
 
-        DB::table('carrera')->insert($carreras);
+        DB::table('carrera')->insertOrIgnore($carreras);
     }
 }

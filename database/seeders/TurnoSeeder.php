@@ -15,6 +15,6 @@ class TurnoSeeder extends Seeder
             ['nombre' => 'Noche',  'descripcion' => '19:00-22:00', 'estado' => 'activo'],
         ];
 
-        DB::table('turno')->insert($turnos);
+        DB::table('turno')->insertOrIgnore($turnos);
     }
 }

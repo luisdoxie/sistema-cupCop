@@ -16,6 +16,6 @@ class PisoSeeder extends Seeder
             ['numero' => 4],
         ];
 
-        DB::table('piso')->insert($pisos);
+        DB::table('piso')->insertOrIgnore($pisos);
     }
 }
