@@ -21,8 +21,9 @@ php artisan storage:link || true
 php artisan migrate --force
 
 # Solo ejecutar seeders si la base de datos está vacía (primer deploy)
-ADMIN_EXISTS=$(php artisan tinker --execute="echo DB::table('persona')->where('correo', 'admin@sistema-cup.edu.bo')->exists() ? '1' : '0';" 2>/dev/null | tail -1)
-if [ "$ADMIN_EXISTS" != "1" ]; then
+if php artisan tinker --execute="echo DB::table('persona')->where('correo', 'admin@sistema-cup.edu.bo')->exists() ? 'SEEDED' : 'EMPTY';" 2>/dev/null | grep -q 'SEEDED'; then
+    echo "Base de datos ya inicializada, omitiendo seeders"
+else
     php artisan db:seed --force
 fi
 
