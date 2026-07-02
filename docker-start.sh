@@ -17,9 +17,14 @@ php artisan view:cache
 # Enlazar storage
 php artisan storage:link || true
 
-# Ejecutar migraciones y seeders
+# Ejecutar migraciones
 php artisan migrate --force
-php artisan db:seed --force
+
+# Solo ejecutar seeders si la base de datos está vacía (primer deploy)
+ADMIN_EXISTS=$(php artisan tinker --execute="echo DB::table('persona')->where('correo', 'admin@sistema-cup.edu.bo')->exists() ? '1' : '0';" 2>/dev/null | tail -1)
+if [ "$ADMIN_EXISTS" != "1" ]; then
+    php artisan db:seed --force
+fi
 
 echo "Iniciando Apache en puerto ${PORT}..."
 exec apache2-foreground
