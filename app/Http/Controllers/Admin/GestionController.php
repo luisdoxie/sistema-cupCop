@@ -76,7 +76,20 @@ class GestionController extends Controller
 
     public function update(GestionRequest $request, Gestion $gestion)
     {
+        $estadoAnterior = $gestion->estado;
         $gestion->update($request->validated());
+
+        // Si la gestión se reactiva, reactivar las asignaciones de sus docentes
+        if ($estadoAnterior !== 'activo' && $gestion->estado === 'activo') {
+            $materiaGrupoIds = DB::table('materia_grupo as mg')
+                ->join('grupo as g', 'g.id', '=', 'mg.id_grupo')
+                ->where('g.id_gestion', $gestion->id)
+                ->pluck('mg.id');
+
+            DB::table('asignacion_academica')
+                ->whereIn('id_materia_grupo', $materiaGrupoIds)
+                ->update(['estado' => 'activo']);
+        }
 
         return redirect()->route('admin.gestiones.index')
             ->with('success', 'Gestión actualizada exitosamente.');
