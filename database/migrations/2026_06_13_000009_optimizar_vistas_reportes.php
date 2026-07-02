@@ -152,7 +152,6 @@ INNER JOIN gestion g        ON g.id   = gr.id_gestion
 LEFT  JOIN promedios pr     ON pr.id_materia_grupo = aa.id_materia_grupo
 GROUP BY p.nombre, p.apellido, doc.id, m.nombre, m.id, g.nombre, g.id;
 ");
-    }
 
         // ── 5. vw_grupos_habilitados ──────────────────────────────────────────
         // Bug anterior: SUM(gr.cupo_maximo) se multiplicaba por el cross-product
